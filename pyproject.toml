@@ -1,0 +1,68 @@
+[project]
+name = "flexgrid"
+version = "0.1.0"
+description = "Prévision J-1 de la consommation d'un portefeuille d'équilibre : spécialistes, TSFM et routage, face à la prévision J-1 de RTE"
+readme = "README.md"
+authors = [
+    { name = "wilson goma", email = "wilson.goma.pro@gmail.com" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "chronos-forecasting>=2.3",
+    "holidays>=0.107",
+    "jours-feries-france>=0.7",
+    "lightgbm>=4.6",
+    "matplotlib>=3.10",
+    "numpy>=2.1",
+    "pandas>=2.3",
+    "pyarrow>=21",
+    "pyyaml>=6.0",
+    "requests>=2.32",
+    "scipy>=1.15",
+    "statsforecast>=2.0",
+    "typer>=0.16",
+    "utilsforecast>=0.2.12",
+]
+
+[project.optional-dependencies]
+# The production stack (block D/E) is kept apart: the research code does not need it.
+prod = [
+    "dagster>=1.11",
+    "dagster-webserver>=1.11",
+    "fastapi>=0.116",
+    "mlflow>=3.1",
+    "uvicorn>=0.35",
+]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28",
+    "ipykernel>=6.29",
+    "jupyter>=1.1",
+    "pytest>=8.4",
+    "ruff>=0.12",
+    "tabulate>=0.9",
+]
+
+[project.scripts]
+flexgrid = "flexgrid.cli:app"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY"]
+ignore = ["B008"]  # typer declares options as argument defaults
+
+[tool.ruff.lint.per-file-ignores]
+"src/flexgrid/figures*.py" = ["E501"]  # labels and titles are text, not code
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: needs the downloaded data or a model download"]
+addopts = "-m 'not slow'"
