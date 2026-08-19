@@ -1,0 +1,420 @@
+{
+  "data/raw/calendrier_scolaire.parquet": {
+    "url": "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/exports/parquet",
+    "params": {
+      "where": "zones in (\"Zone A\", \"Zone B\", \"Zone C\") and population != \"Enseignants\""
+    },
+    "downloaded_utc": "2026-10-30T21:40:48Z",
+    "sha256": "2e43a894beef46286980be06fe1d181233043893fbd08181026e27012b32819c",
+    "bytes": 6621
+  },
+  "data/raw/eco2mix_national_cons_def_2015-01-01_2026-07-01.parquet": {
+    "url": "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-cons-def/exports/parquet",
+    "params": {
+      "select": "date,heure,date_heure,consommation,prevision_j1,prevision_j",
+      "where": "date_heure >= \"2015-01-01T00:00:00+00:00\" and date_heure < \"2026-07-01T00:00:00+00:00\"",
+      "order_by": "date_heure"
+    },
+    "downloaded_utc": "2026-10-30T21:43:53Z",
+    "sha256": "6ede73140e504d9c0dc18c528e8c47e0a1143c9e6813f79236549f309e0456dd",
+    "bytes": 5636657
+  },
+  "data/raw/enedis/sup36_tertiaire_11.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"11\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:01Z",
+    "sha256": "722b87f2413a5dcbec6f4353479949d52713c123a5cce7aa32c421d5baa49929",
+    "bytes": 5748841
+  },
+  "data/raw/enedis/sup36_tertiaire_24.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"24\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:01Z",
+    "sha256": "bd69f10d1ee0c0f48d90da46ddfda24372be1e050612f75dfa6ba7def51dec06",
+    "bytes": 5295504
+  },
+  "data/raw/enedis/sup36_tertiaire_27.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"27\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:01Z",
+    "sha256": "98a74586846f8b3f8ac14d62a2266eafde623cd3ba1638023e1667afb51be61e",
+    "bytes": 5308256
+  },
+  "data/raw/enedis/sup36_tertiaire_28.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"28\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:00Z",
+    "sha256": "4c72da8132c4fb979c8a1b5c08e7b2d44143c9394032a2fd58320cfa5d09f48f",
+    "bytes": 5314274
+  },
+  "data/raw/enedis/sup36_tertiaire_32.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"32\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:01Z",
+    "sha256": "b98700452570a5043ca4f1b50d2193938577d0491b05f594ae132c6c36c24f11",
+    "bytes": 5506014
+  },
+  "data/raw/enedis/sup36_tertiaire_44.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"44\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:48:01Z",
+    "sha256": "492bb13cf543f482a0f62643ac5e7f979efa78c874d72fae1005da07899ae2ca",
+    "bytes": 5330077
+  },
+  "data/raw/enedis/sup36_tertiaire_52.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"52\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:47Z",
+    "sha256": "eccd8a4234c45f5cbf05e2ea23bb290fa23e1ae35ff73959d765be925bc6d461",
+    "bytes": 5337793
+  },
+  "data/raw/enedis/sup36_tertiaire_53.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"53\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:46Z",
+    "sha256": "eb1635f802f8ff93a0fd0d24e8e85004f098c03e5e1da85c0a71cb49e8c9b347",
+    "bytes": 5298447
+  },
+  "data/raw/enedis/sup36_tertiaire_75.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"75\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:47Z",
+    "sha256": "138f1be183f698dd5798d45aad6f1df2893937572c293d98810b6750aa78cad5",
+    "bytes": 5358394
+  },
+  "data/raw/enedis/sup36_tertiaire_76.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"76\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:46Z",
+    "sha256": "0a90cf6b8cfcc5f35e236c0c8acfc468276462e3a3f79e5c43d3f1aa53f7d00a",
+    "bytes": 5368588
+  },
+  "data/raw/enedis/sup36_tertiaire_84.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"84\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:47Z",
+    "sha256": "8545208207f26bc090bd81b5182ac6bacf71391176d52f683449177049b4458f",
+    "bytes": 5401597
+  },
+  "data/raw/enedis/sup36_tertiaire_93.parquet": {
+    "url": "https://opendata.enedis.fr/api/explore/v2.1/catalog/datasets/conso-sup36-region/exports/parquet",
+    "params": {
+      "select": "horodate,code_region,region,profil,plage_de_puissance_souscrite,nb_points_soutirage,total_energie_soutiree_wh",
+      "where": "secteur_activite = \"S3: Tertiaire\" and code_region = \"93\"",
+      "order_by": "horodate"
+    },
+    "downloaded_utc": "2026-10-30T21:49:46Z",
+    "sha256": "fbd9b46c6f889e1bbe301c85295a334838c3d334822cbbf6b40198d9b1442007",
+    "bytes": 5376956
+  },
+  "data/raw/price_da_fr_2023-01-01_2026-07-01.json": {
+    "url": "https://api.energy-charts.info/price",
+    "params": {
+      "bzn": "FR",
+      "start": "2023-01-01",
+      "end": "2026-07-01"
+    },
+    "downloaded_utc": "2026-10-30T21:40:50Z",
+    "sha256": "28d9b7b6af93f8730e43b125685b703f997e8d8b44b9a81aa5f33afe3e217e9b",
+    "bytes": 854611
+  },
+  "data/raw/weather/forecast_2024-02-01_2024-07-31.json": {
+    "url": "https://previous-runs-api.open-meteo.com/v1/forecast",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2024-02-01",
+      "end_date": "2024-07-31",
+      "hourly": "temperature_2m_previous_day1,temperature_2m_previous_day2,cloud_cover_previous_day1,cloud_cover_previous_day2,shortwave_radiation_previous_day1,shortwave_radiation_previous_day2",
+      "models": "ecmwf_ifs025",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:07Z",
+    "sha256": "5d7ea6470ba6308668d77d77c56351c0cc9a7c6f35438dce0fc7cee453ddc62d",
+    "bytes": 2344381
+  },
+  "data/raw/weather/forecast_2024-08-01_2025-01-31.json": {
+    "url": "https://previous-runs-api.open-meteo.com/v1/forecast",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2024-08-01",
+      "end_date": "2025-01-31",
+      "hourly": "temperature_2m_previous_day1,temperature_2m_previous_day2,cloud_cover_previous_day1,cloud_cover_previous_day2,shortwave_radiation_previous_day1,shortwave_radiation_previous_day2",
+      "models": "ecmwf_ifs025",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:08Z",
+    "sha256": "5021defc98807db76458bb47f05152b47dd9103409eca46e042312b2b81bd953",
+    "bytes": 2316055
+  },
+  "data/raw/weather/forecast_2025-02-01_2025-07-31.json": {
+    "url": "https://previous-runs-api.open-meteo.com/v1/forecast",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2025-02-01",
+      "end_date": "2025-07-31",
+      "hourly": "temperature_2m_previous_day1,temperature_2m_previous_day2,cloud_cover_previous_day1,cloud_cover_previous_day2,shortwave_radiation_previous_day1,shortwave_radiation_previous_day2",
+      "models": "ecmwf_ifs025",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:09Z",
+    "sha256": "9c5aa34575f62e31f5326306233186adcd538edb086ec93f0c1b5e978f710ea6",
+    "bytes": 2303144
+  },
+  "data/raw/weather/forecast_2025-08-01_2026-01-31.json": {
+    "url": "https://previous-runs-api.open-meteo.com/v1/forecast",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2025-08-01",
+      "end_date": "2026-01-31",
+      "hourly": "temperature_2m_previous_day1,temperature_2m_previous_day2,cloud_cover_previous_day1,cloud_cover_previous_day2,shortwave_radiation_previous_day1,shortwave_radiation_previous_day2",
+      "models": "ecmwf_ifs025",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:10Z",
+    "sha256": "eb662d14f2b6043717cc1b73f899fb41dbc26034c46435227541ed7e7d0bde4c",
+    "bytes": 2328944
+  },
+  "data/raw/weather/forecast_2026-02-01_2026-06-30.json": {
+    "url": "https://previous-runs-api.open-meteo.com/v1/forecast",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2026-02-01",
+      "end_date": "2026-06-30",
+      "hourly": "temperature_2m_previous_day1,temperature_2m_previous_day2,cloud_cover_previous_day1,cloud_cover_previous_day2,shortwave_radiation_previous_day1,shortwave_radiation_previous_day2",
+      "models": "ecmwf_ifs025",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:12Z",
+    "sha256": "1ae9c83b6a1004dc9f065f4950dff365467d1e15281a1e89388f0dbfa8bf5787",
+    "bytes": 1927128
+  },
+  "data/raw/weather/observed_2015-01-01_2015-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2015-01-01",
+      "end_date": "2015-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:50Z",
+    "sha256": "f90fab64641f5b0b042fe54662bbc9404c970d52587bc00a5fb223b7752f77d4",
+    "bytes": 3322532
+  },
+  "data/raw/weather/observed_2016-01-01_2016-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2016-01-01",
+      "end_date": "2016-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:51Z",
+    "sha256": "03ab027c031f091a7e45bcc997cb8f8c5c04edd0bfdee70cd59af0692976c11c",
+    "bytes": 3328743
+  },
+  "data/raw/weather/observed_2017-01-01_2017-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2017-01-01",
+      "end_date": "2017-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:51Z",
+    "sha256": "cd94d789ec416624d5e89c18a383fdcd35330f9a1dab7d7b479e8e07de5fa09d",
+    "bytes": 3321426
+  },
+  "data/raw/weather/observed_2018-01-01_2018-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2018-01-01",
+      "end_date": "2018-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:51Z",
+    "sha256": "02bbb6f7390b6aada0a00c11cc2bdec7498f690c6391422eb5cf064b9dcc9a3f",
+    "bytes": 3322705
+  },
+  "data/raw/weather/observed_2019-01-01_2019-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2019-01-01",
+      "end_date": "2019-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:52Z",
+    "sha256": "ca2e089ddd44ef742f33066acde3c0bfff8aab83db7250f809d0028bf242b079",
+    "bytes": 3317892
+  },
+  "data/raw/weather/observed_2020-01-01_2020-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2020-01-01",
+      "end_date": "2020-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:52Z",
+    "sha256": "b3af84cfe2c0bcc32a056a4bb0a938d9585d43bb2a073fd3e0c91b91f50cfa2c",
+    "bytes": 3330484
+  },
+  "data/raw/weather/observed_2021-01-01_2021-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2021-01-01",
+      "end_date": "2021-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:40:53Z",
+    "sha256": "730b19fe8f4f75bbb8ede31497d0d5f79fef903152c15fabdbc9884e26febc46",
+    "bytes": 3318666
+  },
+  "data/raw/weather/observed_2022-01-01_2022-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2022-01-01",
+      "end_date": "2022-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:03Z",
+    "sha256": "d272d8ebb30cfc0f63776e643fce91f519c147b128cd6e91ef74c09fde86f0a3",
+    "bytes": 3324851
+  },
+  "data/raw/weather/observed_2023-01-01_2023-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2023-01-01",
+      "end_date": "2023-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:04Z",
+    "sha256": "7124711c1fffa09cf5afa5ef5b5d7da9251da324582437780f711d0901ac5dbd",
+    "bytes": 3326437
+  },
+  "data/raw/weather/observed_2024-01-01_2024-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2024-01-01",
+      "end_date": "2024-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:05Z",
+    "sha256": "7161e981f94f48ee1d60bb96c337cf39b3b48767267c6da9d9be947efe01062b",
+    "bytes": 3343915
+  },
+  "data/raw/weather/observed_2025-01-01_2025-12-31.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:05Z",
+    "sha256": "8c4c87ba203dd7fcc6b8b47ff25a8a8233544ae6a5726c484b9e35065d7481c7",
+    "bytes": 3323028
+  },
+  "data/raw/weather/observed_2026-01-01_2026-06-30.json": {
+    "url": "https://archive-api.open-meteo.com/v1/archive",
+    "params": {
+      "latitude": "48.85,47.9,47.32,49.44,50.63,48.69,47.22,48.11,44.84,43.6,45.76,43.3",
+      "longitude": "2.35,1.9,5.04,1.1,3.06,6.18,-1.55,-1.68,-0.58,1.44,4.84,5.37",
+      "start_date": "2026-01-01",
+      "end_date": "2026-06-30",
+      "hourly": "temperature_2m,cloud_cover,shortwave_radiation",
+      "models": "era5",
+      "timezone": "GMT"
+    },
+    "downloaded_utc": "2026-10-30T21:41:06Z",
+    "sha256": "b0ddff108d1778fc0a57c6952fe84ebab97e19654598de68c023a33a13e71aab",
+    "bytes": 1649315
+  }
+}

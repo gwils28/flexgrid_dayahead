@@ -1,0 +1,19 @@
+# Une ville par région métropolitaine (hors Corse, absente d'éCO2mix national et d'Enedis).
+# Poids = population régionale, estimations INSEE au 1er janvier 2024 arrondies (millions).
+# Simplification déclarée : une grande région (Occitanie, Auvergne-Rhône-Alpes) n'a qu'un point.
+variables: [temperature_2m, cloud_cover, shortwave_radiation]
+observed: {api: https://archive-api.open-meteo.com/v1/archive, model: era5}
+forecast: {api: https://previous-runs-api.open-meteo.com/v1/forecast, model: ecmwf_ifs025, lead_days: [1, 2]}
+regions:
+  "11": {name: Île-de-France, city: Paris, lat: 48.85, lon: 2.35, pop: 12.37}
+  "24": {name: Centre-Val de Loire, city: Orléans, lat: 47.90, lon: 1.90, pop: 2.57}
+  "27": {name: Bourgogne-Franche-Comté, city: Dijon, lat: 47.32, lon: 5.04, pop: 2.80}
+  "28": {name: Normandie, city: Rouen, lat: 49.44, lon: 1.10, pop: 3.32}
+  "32": {name: Hauts-de-France, city: Lille, lat: 50.63, lon: 3.06, pop: 5.98}
+  "44": {name: Grand Est, city: Nancy, lat: 48.69, lon: 6.18, pop: 5.56}
+  "52": {name: Pays de la Loire, city: Nantes, lat: 47.22, lon: -1.55, pop: 3.93}
+  "53": {name: Bretagne, city: Rennes, lat: 48.11, lon: -1.68, pop: 3.45}
+  "75": {name: Nouvelle-Aquitaine, city: Bordeaux, lat: 44.84, lon: -0.58, pop: 6.15}
+  "76": {name: Occitanie, city: Toulouse, lat: 43.60, lon: 1.44, pop: 6.10}
+  "84": {name: Auvergne-Rhône-Alpes, city: Lyon, lat: 45.76, lon: 4.84, pop: 8.24}
+  "93": {name: Provence-Alpes-Côte d'Azur, city: Marseille, lat: 43.30, lon: 5.37, pop: 5.16}
