@@ -1,0 +1,112 @@
+# Protocole pré-enregistré. Versionné avant le premier calcul de prévision : changer une valeur
+# ci-dessous après avoir vu des résultats est une déviation, datée ici et reportée dans
+# IMPLEMENTATION_NOTES.md (la valeur d'origine reste écrite).
+
+data:
+  eco2mix: {start: "2015-01-01", end: "2026-07-01"}
+  # Hors de cette plage, une valeur nationale devient manquante. Record national : ~102 GW (février 2012).
+  national_range_mw: [25000, 105000]
+  # Segment Enedis : plage relative à la médiane du segment (pas de record par segment).
+  segment_range_vs_median: [0.05, 5.0]
+  fill_linear_max_steps: 4      # 2 h ; au-delà, même pas une semaine plus tôt, listé au rapport de trous
+  local_tz: Europe/Paris
+
+portfolio:
+  # FlexGrid = somme de ces segments (région_tranche_profil), choisis sur leur énergie annuelle.
+  segments: ["24_P2_ENT1", "27_P2_ENT1"]
+  scale_national_to_gwh: 800    # mise à l'échelle du national, pour comparaison seulement (SPEC, angle mort 6)
+
+panel:
+  sector: "S3: Tertiaire"
+  bands: [P1, P2, P4, P5, P6]   # tranches disjointes (P3, P7 sont des sous-totaux)
+  min_sites: 50
+  max_missing: 0.005
+
+clock:
+  issue_local: "09:00"          # J-1, heure de Paris
+  national_known_until_local: "08:00"   # dernier pas national observé à l'émission (J-1)
+  segments_known_until: end_of_d_minus_2
+  weather_lead_day: 2           # previous_day2 : toujours publié à l'émission (SPEC)
+
+windows:
+  # Jours de livraison J (dates locales).
+  validation: ["2025-01-01", "2025-06-30"]   # apprentissage du router, calibration conforme initiale
+  test: ["2025-07-01", "2026-06-30"]         # verdict : 365 origines quotidiennes
+
+models:
+  snaive_day: {season: 48}
+  snaive_week: {season: 336}
+  mstl: {seasons: [48, 336], trend: "AutoETS(ZZN)", train_steps: 2688}       # 8 semaines
+  ets_seasonal: {season: 48, spec: ZZA, train_steps: 1344}                     # leçon W25 : saison forcée
+  lgbm:
+    objective: quantile
+    refit: weekly                 # réappris chaque lundi d'émission, sur tout l'historique connu
+    num_boost_round: 600
+    learning_rate: 0.05
+    num_leaves: 63
+    min_data_in_leaf: 100
+    feature_fraction: 0.8
+    seed: 18
+    weather_train: observed       # ERA5 ; météo prévue à l'inférence (SPEC, angle mort 7)
+  chronos2: {checkpoint: amazon/chronos-2, context_steps: 2048, covariates: false}
+  chronos2_cov: {checkpoint: amazon/chronos-2, context_steps: 2048, covariates: true}
+  ensemble: {members: [lgbm, chronos2_cov], rule: quantile_average}
+  # Benchmarks (national seulement).
+  rte_j1: {alignment: same}
+  rte_j1_debiased: {alignment: same, window_days: 28}
+
+# Grille de quantiles émise par tous les modèles probabilistes.
+quantiles: [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95]
+
+metrics:
+  mase_seasonality: 336
+  smape: textbook               # 2|e| / (|y| + |f|), bornée par 2 (utilsforecast en donne la moitié)
+  point: [mae, mape, smape, wape, mase]
+  probabilistic: [pinball, crps, cov50, cov80, cov90, width90, winkler90]
+  # CRPS approché par 2 x la pinball moyenne sur la grille de 7 quantiles : une approximation, dite comme telle.
+
+conformal:
+  # Réparation a posteriori d'un intervalle : médiane conservée, quantiles reconstruits à partir des erreurs
+  # absolues des `calibration_days` origines précédentes, au même pas de la journée.
+  calibration_days: 56
+
+verdict:
+  reference: rte_j1
+  reference_strong: rte_j1_debiased
+  alignment_sensitivity: previous   # « bat RTE » exige la victoire sous les deux lectures
+  # « C bat la référence » ssi l'IC 95 % du ratio des MAE moyens (C / référence) est entièrement sous 1.
+  ratio_ci: 0.95
+  coverage90_band: [0.85, 0.95]     # « déployable tel quel » ssi la couverture 90 % tombe dans cette bande
+  bootstrap: {block_days: 7, replicates: 2000, seed: 18}
+
+cost:
+  # Écart (MWh) = |réalisé - nomination| x 0,5 h ; nomination = médiane du modèle.
+  # Coût = écart x |prix day-ahead| x k. k = 1 : définition du brief (borne haute) ; k = 0,1-0,5 : pénalité.
+  nomination_quantile: 0.5
+  k_headline: 1.0
+  k_scenarios: [0.1, 0.25, 0.5]
+
+router:
+  units: panel_segments
+  branches: [lgbm, chronos2_cov]
+  features:          # ex-ante, calculées sur les 8 semaines précédant le premier jour de la fenêtre
+    - history_days
+    - n_sites
+    - mean_mw
+    - seasonal_strength_48
+    - seasonal_strength_336
+    - cv
+    - naive_noise          # MAE de la naïve hebdomadaire / moyenne
+    - temp_sensitivity     # pente conso / température journalière (MW/°C), en valeur absolue relative
+  policies: [always_lgbm, always_chronos2_cov, ensemble, learned_stump, oracle]
+  # Le stump est appris sur la fenêtre de validation, appliqué tel quel sur l'année de test.
+  drift: {trailing_days: 28}
+
+cold_start:
+  # Historique tronqué à chaque origine, pour les segments du panel.
+  history_days: [7, 14, 28, 56]
+  models: [snaive_week, lgbm, chronos2, chronos2_cov, chronos2_fewshot]
+  # few-shot in-context : Chronos-2 en cross_learning, le lot contient le segment tronqué et les segments de
+  # même tranche et profil des autres régions, avec leur historique complet, coupés au même instant.
+
+seed: 18
