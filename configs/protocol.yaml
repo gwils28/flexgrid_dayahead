@@ -8,6 +8,10 @@ data:
   national_range_mw: [25000, 105000]
   # Segment Enedis : plage relative à la médiane du segment (pas de record par segment).
   segment_range_vs_median: [0.05, 5.0]
+  # DÉVIATION (ajoutée le 2026-08-21, avant toute prévision) : la règle ci-dessus retire 7 399 pas réels de
+  # 84_P4_ENT1, segment chauffé à l'électricité dont l'hiver vaut 6 fois l'été. Plage remplaçante, bas relatif
+  # à la médiane, haut relatif au quantile 99,9 % : [0,05 x médiane, 2 x q99,9].
+  segment_range: {low_vs_median: 0.05, high_vs_q999: 2.0}
   fill_linear_max_steps: 4      # 2 h ; au-delà, même pas une semaine plus tôt, listé au rapport de trous
   local_tz: Europe/Paris
 
