@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(data/raw/**)",
+      "Write(data/raw/**)",
+      "Edit(data/MANIFEST.json)",
+      "Write(data/MANIFEST.json)",
+      "Read(.env)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in *.py) uv run ruff format -q \"$f\" ;; esac; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}
