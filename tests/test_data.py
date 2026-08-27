@@ -121,3 +121,9 @@ def test_school_zones_count_half_open_interval():
     )
     days = pd.DatetimeIndex(["2025-10-17", "2025-10-18", "2025-10-25", "2025-11-03"])
     assert C.school_zones_on_holiday(school, days).tolist() == [0, 2, 1, 0]
+
+
+def test_calendar_lookup_equals_direct_computation():
+    school = pd.DataFrame(columns=["start_date", "end_date", "zones"])
+    idx = pd.date_range("2025-10-24", "2025-10-28", freq="30min", tz="UTC")
+    pd.testing.assert_frame_equal(C.lookup(idx, school), C.features(idx, school), check_freq=False)

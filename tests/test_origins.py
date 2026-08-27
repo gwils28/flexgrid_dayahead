@@ -31,3 +31,21 @@ def test_delivery_day_is_the_local_date():
     ds = pd.DatetimeIndex(["2025-07-01T21:30Z", "2025-07-01T22:00Z"])
     assert delivery_day(ds).dt.day.tolist() == [1, 2]
 
+
+def test_lags_never_read_after_the_cutoff_even_on_dst_days():
+    from flexgrid.models.features import cutoffs, local_shift, target_features
+
+    idx = pd.date_range("2025-01-01", "2026-06-30", freq="30min", tz="UTC")
+    y = pd.Series(1.0, index=idx)
+    for fam in ("national", "segments"):
+        targets = idx[idx >= "2025-02-01"]
+        f = target_features(y, targets, fam)
+        for n in (2, 7, 14):
+            assert (local_shift(targets, n) <= pd.DatetimeIndex(f.cutoff)).all()
+        # la version en pas UTC, elle, lit après le cutoff le jour du passage à l'heure d'hiver
+        if fam == "segments":
+            assert not ((targets - 96 * pd.Timedelta("30min")) <= pd.DatetimeIndex(f.cutoff)).all()
+        # mêmes cutoffs que l'horloge de référence
+        for d in ["2025-03-30", "2025-10-26", "2025-11-12"]:
+            o = Origin(pd.Timestamp(d), fam)
+            assert (cutoffs(o.targets, fam) == o.cutoff).all()
