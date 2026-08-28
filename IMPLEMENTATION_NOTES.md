@@ -16,3 +16,19 @@ récentes en dernier.
 - La moyenne météo du portefeuille donne le même poids aux deux régions (Orléans, Dijon) : leurs segments ont des
   énergies voisines (413 et 403 GWh/an).
 - Le manifeste `data/MANIFEST.json` garde la date réelle de chaque téléchargement.
+
+## Bloc B : modèles
+
+- **Fuite trouvée par un test avant tout calcul : les retards en pas UTC.** Un retard de 2 jours compté en pas
+  (96 pas = 48 h) lit, pour les derniers pas du jour du passage à l'heure d'hiver, la valeur de 00:30 locale en J-1 :
+  après le cutoff des segments (fin de J-2). Les retards (2, 7, 14 jours) et la température d'il y a 7 jours sont
+  désormais pris à la même heure d'horloge locale (`features.local_shift`). Le test garde aussi la version UTC pour
+  vérifier qu'elle fuit bien : s'il cessait d'échouer, c'est que le test ne testerait plus rien.
+- **DÉVIATION (2026-08-27, avant toute prévision) : sous-échantillonnage des lignes de LightGBM.** Le panel compte
+  4,25 M lignes d'apprentissage ; un quantile prend 55 s, soit ~8 h pour 78 réapprentissages hebdomadaires x 7
+  quantiles. `bagging_fraction = 0,3` ramène un quantile à 26 s. Appliqué aux deux familles.
+- Le calendrier est précalculé une fois sur 2014-2027 et lu par position : le `reindex` d'un index UTC dont l'unité
+  diffère (`datetime64[us]` contre `[ns]`) coûtait 80 ms par appel, et il y en a 45 000.
+- Chronos-2 est entraîné sur 21 quantiles de 0,01 à 0,99 : la grille du protocole (0,05 à 0,95) est native, pas le
+  piège de Chronos-Bolt vu dans W25.
+- Les modèles statistiques reçoivent les pas imputés comme entrées (le trou d'octobre), jamais comme cibles.

@@ -52,7 +52,7 @@ dev = [
 flexgrid = "flexgrid.cli:app"
 
 [tool.ruff]
-line-length = 110
+line-length = 120  # prose française dans les docstrings
 target-version = "py312"
 
 [tool.ruff.lint]

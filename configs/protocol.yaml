@@ -50,6 +50,10 @@ models:
     num_leaves: 63
     min_data_in_leaf: 100
     feature_fraction: 0.8
+    # DÉVIATION (2026-08-27, avant toute prévision) : 4,25 M lignes pour le panel, 55 s par quantile et par
+    # réapprentissage, soit ~8 h de backtest. Sous-échantillonnage de 30 % des lignes par arbre : 26 s.
+    bagging_fraction: 0.3
+    bagging_freq: 1
     seed: 18
     weather_train: observed       # ERA5 ; météo prévue à l'inférence (SPEC, angle mort 7)
   chronos2: {checkpoint: amazon/chronos-2, context_steps: 2048, covariates: false}
