@@ -56,5 +56,24 @@ def figures_data() -> None:
         print(p)
 
 
+@app.command()
+def forecast(family: str, models: list[str]) -> None:
+    """Backtest d'une famille (national | segments) pour un ou plusieurs modèles."""
+    from flexgrid.backtest.run import run
+
+    for m in models:
+        run(load_protocol(), family, m, log=lambda s: print(s, flush=True))
+
+
+@app.command("score")
+def score_cmd(families: list[str]) -> None:
+    """Benchmarks RTE, mélange, réparations conformes et métriques par origine."""
+    from flexgrid.backtest.score import score
+
+    for f in families:
+        po = score(load_protocol(), f)
+        print(f, len(po), "lignes")
+
+
 if __name__ == "__main__":
     app()
