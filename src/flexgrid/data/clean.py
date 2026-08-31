@@ -36,9 +36,7 @@ def gap_runs(observed: pd.Series) -> pd.DataFrame:
         )
     edges = np.diff(np.concatenate([[0], bad.astype(int), [0]]))
     starts, ends = np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)
-    return pd.DataFrame(
-        {"start": observed.index[starts], "end": observed.index[ends - 1], "steps": ends - starts}
-    )
+    return pd.DataFrame({"start": observed.index[starts], "end": observed.index[ends - 1], "steps": ends - starts})
 
 
 def clean(

@@ -31,24 +31,18 @@ def national_overview(nat: pd.DataFrame) -> Path:
     fig, axes = plt.subplots(3, 1, figsize=(10, 9), gridspec_kw={"height_ratios": [2, 1, 1]})
     ax = axes[0]
     ax.plot(daily.index, daily, color=P.SLOTS[0], lw=0.8)
-    P.titled(
-        ax, "Consommation nationale (moyenne journalière)", "GW, éCO2mix consolidé et définitif, 2015-2026"
-    )
+    P.titled(ax, "Consommation nationale (moyenne journalière)", "GW, éCO2mix consolidé et définitif, 2015-2026")
     ax.set_ylabel("GW")
     ax = axes[1]
     ax.bar(mape.index, mape, color=[P.SLOTS[0] if y < 2023 else P.SLOTS[1] for y in mape.index], width=0.7)
     for y, v in mape.items():
         ax.text(y, v + 0.05, f"{v:.1f}", ha="center", fontsize=8, color=P.INK_2)
-    P.titled(
-        ax, "MAPE de la prévision J-1 de RTE, par année", "%, tous les pas observés (2026 : janvier-juin)"
-    )
+    P.titled(ax, "MAPE de la prévision J-1 de RTE, par année", "%, tous les pas observés (2026 : janvier-juin)")
     ax.set_ylabel("%")
     ax = axes[2]
     ax.bar(bias.index, bias, color=[P.SLOTS[0] if y < 2023 else P.SLOTS[1] for y in bias.index], width=0.7)
     ax.axhline(0, color=P.INK_2, lw=0.8)
-    P.titled(
-        ax, "Biais moyen de RTE J-1 (réalisé - prévu)", "GW : depuis 2023, RTE sous-prévoit d'environ 1 GW"
-    )
+    P.titled(ax, "Biais moyen de RTE J-1 (réalisé - prévu)", "GW : depuis 2023, RTE sous-prévoit d'environ 1 GW")
     ax.set_ylabel("GW")
     fig.tight_layout()
     return P.save(fig, OUT / "national_overview.png")
@@ -194,9 +188,7 @@ def profiles(nat: pd.DataFrame, seg: pd.DataFrame, school: pd.DataFrame, test: t
     fig, axes = plt.subplots(1, 2, figsize=(11, 4), sharey=True)
     names = {0: "lundi", 2: "mercredi", 5: "samedi", 6: "dimanche / férié"}
     colors = {0: P.SLOTS[0], 2: P.SLOTS[2], 5: P.SLOTS[3], 6: P.SLOTS[1]}
-    for ax, (s, title) in zip(
-        axes, [(n.y, "National"), (pf.y, "Portefeuille FlexGrid (3 517 sites)")], strict=True
-    ):
+    for ax, (s, title) in zip(axes, [(n.y, "National"), (pf.y, "Portefeuille FlexGrid (3 517 sites)")], strict=True):
         s = s.loc[test[0] : test[1]]
         cal = C.features(s.index, school)
         rel = s / s.mean()
@@ -360,9 +352,7 @@ def prices_figure(pr: pd.DataFrame) -> Path:
     d = p.resample("D").mean()
     ax.plot(d.index, d, color=P.SLOTS[0], lw=0.9)
     ax.axvline(pd.Timestamp("2025-10-01", tz="UTC"), color=P.INK_2, lw=1, ls="--")
-    ax.text(
-        pd.Timestamp("2025-10-05", tz="UTC"), ax.get_ylim()[1] * 0.92, "pas 15 min", fontsize=8, color=P.INK_2
-    )
+    ax.text(pd.Timestamp("2025-10-05", tz="UTC"), ax.get_ylim()[1] * 0.92, "pas 15 min", fontsize=8, color=P.INK_2)
     ax.set_ylabel("€/MWh")
     P.titled(
         ax,
@@ -382,9 +372,7 @@ def prices_figure(pr: pd.DataFrame) -> Path:
 
 
 def gaps_table(gaps: pd.DataFrame) -> pd.DataFrame:
-    return (
-        gaps.groupby(["unique_id", "method"]).agg(n=("steps", "size"), steps=("steps", "sum")).reset_index()
-    )
+    return gaps.groupby(["unique_id", "method"]).agg(n=("steps", "size"), steps=("steps", "sum")).reset_index()
 
 
 def all_figures(protocol: dict) -> list[Path]:

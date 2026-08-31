@@ -19,3 +19,4 @@ report/_freeze/
 report/.quarto/
 report/figures/
 *.part
+results/forecasts/

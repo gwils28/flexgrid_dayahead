@@ -26,11 +26,11 @@ class Origin:
 
     @property
     def day_start(self) -> pd.Timestamp:
-        return self.day.tz_localize(TZ).tz_convert("UTC")
+        return self.day.tz_localize(TZ).tz_convert("UTC").as_unit("ns")
 
     @property
     def day_end(self) -> pd.Timestamp:
-        return (self.day + pd.Timedelta(days=1)).tz_localize(TZ).tz_convert("UTC")
+        return (self.day + pd.Timedelta(days=1)).tz_localize(TZ).tz_convert("UTC").as_unit("ns")
 
     @property
     def issue(self) -> pd.Timestamp:
@@ -47,7 +47,7 @@ class Origin:
 
     @property
     def targets(self) -> pd.DatetimeIndex:
-        return pd.date_range(self.day_start, self.day_end, freq=STEP, inclusive="left")
+        return pd.date_range(self.day_start, self.day_end, freq=STEP, inclusive="left", unit="ns")
 
     @property
     def horizon(self) -> int:
@@ -60,7 +60,7 @@ def days(start: str, end: str) -> list[pd.Timestamp]:
 
 
 def origins(start: str, end: str, family: str) -> list[Origin]:
-    return [Origin(d, family) for d in days(start, end)]
+    return [Origin(d.as_unit("ns"), family) for d in days(start, end)]
 
 
 def delivery_day(ds: pd.Series | pd.DatetimeIndex) -> pd.Series:

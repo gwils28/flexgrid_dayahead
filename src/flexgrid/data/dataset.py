@@ -35,9 +35,7 @@ def panel_ids(raw: pd.DataFrame, protocol: dict) -> list[str]:
     """Segments disjoints du panel : assez de sites, presque pas de pas masqués (SPEC, angle mort 10)."""
     p = protocol["panel"]
     g = raw.groupby("unique_id")
-    sites = (
-        raw[raw.ds >= raw.ds.max() - pd.Timedelta(days=30)].groupby("unique_id").nb_points_soutirage.mean()
-    )
+    sites = raw[raw.ds >= raw.ds.max() - pd.Timedelta(days=30)].groupby("unique_id").nb_points_soutirage.mean()
     missing = g.total_energie_soutiree_wh.apply(lambda x: x.isna().mean())
     ok = (sites >= p["min_sites"]) & (missing <= p["max_missing"])
     return sorted(ok[ok].index)
@@ -56,9 +54,7 @@ def build_segments(protocol: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
         filled, observed, gp = clean(g.y, bounds, protocol["data"]["fill_linear_max_steps"])
         n_sites = g.nb_points_soutirage.reindex(filled.index).ffill().bfill()
         frames.append(
-            pd.DataFrame(
-                {"unique_id": uid, "y": filled, "observed": observed, "n_sites": n_sites, "region": uid[:2]}
-            )
+            pd.DataFrame({"unique_id": uid, "y": filled, "observed": observed, "n_sites": n_sites, "region": uid[:2]})
         )
         gaps.append(gp.assign(unique_id=uid))
     seg = pd.concat(frames).rename_axis("ds").reset_index()
@@ -107,5 +103,16 @@ def build_all(protocol: dict) -> dict:
     }
 
 
+def as_ns(df: pd.DataFrame) -> pd.DataFrame:
+    """Horodatages en nanosecondes partout : parquet relit des ms ou des µs, et un `reindex` entre unités
+    différentes passe par un chemin lent (1,1 s au lieu de 1 ms pour une journée)."""
+    for c in df.columns:
+        if isinstance(df[c].dtype, pd.DatetimeTZDtype):
+            df[c] = df[c].dt.as_unit("ns")
+        elif pd.api.types.is_datetime64_dtype(df[c]):
+            df[c] = df[c].astype("datetime64[ns]")
+    return df
+
+
 def load(name: str) -> pd.DataFrame:
-    return pd.read_parquet(INTERIM / f"{name}.parquet")
+    return as_ns(pd.read_parquet(INTERIM / f"{name}.parquet"))
