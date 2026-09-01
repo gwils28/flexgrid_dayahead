@@ -50,3 +50,28 @@ def debiased(nat: pd.DataFrame, origins: list[Origin], window_days: int, column:
         v = n[column].reindex(o.targets).to_numpy() + bias.reindex(hh).to_numpy()
         out.append(pd.Series(v, index=o.targets))
     return _frame(pd.concat(out), origins, f"{column.replace('rte_j1', 'rte_j1_debiased')}")
+
+
+def prorata(nat: pd.DataFrame, port: pd.DataFrame, origins: list[Origin], window_days: int = 28) -> pd.DataFrame:
+    """Baseline « BRP pressé » du portefeuille : prévision J-1 de RTE x part du portefeuille.
+
+    La part est le rapport moyen (portefeuille réalisé / RTE J-1) par demi-heure locale sur les `window_days` jours
+    connus à l'émission (jusqu'à J-2) : elle absorbe au passage le biais de RTE. Exploratoire, ajoutée après le
+    protocole (voir IMPLEMENTATION_NOTES).
+    """
+    n = nat.set_index("ds").rte_j1
+    p = port.set_index("ds")
+    ratio = (p.y / n.reindex(p.index)).where(p.observed)
+    loc = ratio.index.tz_convert(TZ)
+    e = pd.DataFrame(
+        {"r": ratio.to_numpy(), "day": loc.tz_localize(None).normalize(), "hh": loc.hour * 2 + loc.minute // 30}
+    )
+    table = e.pivot_table(index="day", columns="hh", values="r", aggfunc="mean")
+    out = []
+    for o in origins:
+        share = table.loc[o.day - pd.Timedelta(days=window_days + 1) : o.day - pd.Timedelta(days=2)].mean()
+        tl = o.targets.tz_convert(TZ)
+        v = n.reindex(o.targets).to_numpy() * share.reindex(tl.hour * 2 + tl.minute // 30).to_numpy()
+        out.append(pd.Series(v, index=o.targets))
+    f = _frame(pd.concat(out), origins, "rte_prorata")
+    return f.assign(unique_id=port.unique_id.iloc[0])

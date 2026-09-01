@@ -16,7 +16,7 @@ from flexgrid.paths import RESULTS
 
 
 def load_forecasts(family: str) -> dict[str, pd.DataFrame]:
-    return {p.stem: pd.read_parquet(p) for p in sorted(forecast_dir(family).glob("*.parquet"))}
+    return {p.stem: dataset.as_ns(pd.read_parquet(p)) for p in sorted(forecast_dir(family).glob("*.parquet"))}
 
 
 def ensemble(a: pd.DataFrame, b: pd.DataFrame, name: str = "ensemble") -> pd.DataFrame:
@@ -39,13 +39,21 @@ def add_derived(fcs: dict[str, pd.DataFrame], family: str, protocol: dict) -> di
         fcs["rte_j1_prev"] = rte.raw(nat, origins, "rte_j1_prev", "rte_j1_prev")
         fcs["rte_j1_debiased"] = rte.debiased(nat, origins, w)
         fcs["rte_j1_debiased_prev"] = rte.debiased(nat, origins, w, column="rte_j1_prev")
+    if family == "segments":
+        nat = dataset.load("national")
+        port = actuals[actuals.unique_id == dataset.PORTFOLIO_ID]
+        fcs["rte_prorata"] = rte.prorata(nat, port, origins)
     if "lgbm" in fcs and "chronos2_cov" in fcs:
         fcs["ensemble"] = ensemble(fcs["lgbm"], fcs["chronos2_cov"])
     n_cal = protocol["conformal"]["calibration_days"]
-    for name in [n for n in list(fcs) if n in ("lgbm", "chronos2_cov", "ensemble", "rte_j1_debiased", "mstl")]:
-        parts = [
-            conformal.conformalize(g, actuals[actuals.unique_id == u], n_cal) for u, g in fcs[name].groupby("unique_id")
+    for name in [
+        n for n in list(fcs) if n in ("lgbm", "chronos2_cov", "ensemble", "rte_j1_debiased", "rte_prorata", "mstl")
+    ]:
+        # Segments : seul le portefeuille est réparé (le panel sert au router, qui ne lit que la médiane).
+        groups = [
+            (u, g) for u, g in fcs[name].groupby("unique_id") if family == "national" or u == dataset.PORTFOLIO_ID
         ]
+        parts = [conformal.conformalize(g, actuals[actuals.unique_id == u], n_cal) for u, g in groups]
         fcs[f"{name}_conformal"] = pd.concat(parts, ignore_index=True)
     return fcs
 
