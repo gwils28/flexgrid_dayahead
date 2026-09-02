@@ -20,3 +20,5 @@ report/.quarto/
 report/figures/
 *.part
 results/forecasts/
+prod_store/
+.secrets/
