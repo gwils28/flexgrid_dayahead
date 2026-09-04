@@ -142,7 +142,7 @@ def rte_error_structure(nat: pd.DataFrame, test: tuple[str, str]) -> Path:
     ax = axes[1]
     ax.bar(monthly.index, monthly, width=26, align="edge", color=P.SLOTS[1])
     ax.axhline(0, color=P.INK_2, lw=0.8)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%y"))
+    P.month_axis(ax)
     ax.set_ylabel("GW")
     P.titled(ax, "Biais mensuel de RTE J-1", "positif tous les mois : un biais stable se corrige")
     fig.tight_layout()
@@ -237,6 +237,7 @@ def weather_forecast_error(wo: pd.DataFrame, test: tuple[str, str]) -> Path:
     fig, ax = plt.subplots(figsize=(9, 3.8))
     for lead, col in [(1, P.SLOTS[0]), (2, P.SLOTS[1])]:
         f = W.national(W.to_half_hour(W.forecast(lead))).temperature_2m
+        f.index = pd.DatetimeIndex(f.index).as_unit("ns")
         e = (f - o).dropna().loc[test[0] : test[1]]
         m = e.abs().resample("MS").mean()
         ax.plot(
@@ -249,7 +250,7 @@ def weather_forecast_error(wo: pd.DataFrame, test: tuple[str, str]) -> Path:
         )
     ax.set_ylabel("MAE température (°C)")
     ax.set_ylim(bottom=0)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%y"))
+    P.month_axis(ax)
     P.titled(
         ax,
         "Ce que coûte la prévision météo prise 48 h avant",

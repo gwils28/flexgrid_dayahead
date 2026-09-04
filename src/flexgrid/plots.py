@@ -107,3 +107,19 @@ def titled(ax, title: str, sub: str | None = None) -> None:
     ax.set_title(title, pad=20 if sub else 8)
     if sub:
         ax.text(0, 1.015, sub, transform=ax.transAxes, fontsize=9, color=INK_2, va="bottom")
+
+
+MOIS_COURTS = ["janv", "févr", "mars", "avr", "mai", "juin", "juil", "août", "sept", "oct", "nov", "déc"]
+
+
+def month_label(t) -> str:
+    return f"{MOIS_COURTS[t.month - 1]}\n{t.strftime('%y')}"
+
+
+def month_axis(ax) -> None:
+    """Axe des dates en mois français (« janv / 26 »)."""
+    import matplotlib.dates as mdates
+    from matplotlib.ticker import FuncFormatter
+
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=range(1, 13, 2)))
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: month_label(mdates.num2date(x))))
