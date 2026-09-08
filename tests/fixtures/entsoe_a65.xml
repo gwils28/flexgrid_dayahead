@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
+  <TimeSeries>
+    <Period>
+      <timeInterval><start>2025-10-25T22:00Z</start><end>2025-10-26T00:00Z</end></timeInterval>
+      <resolution>PT30M</resolution>
+      <Point><position>1</position><quantity>44168</quantity></Point>
+      <Point><position>2</position><quantity>43714</quantity></Point>
+      <Point><position>4</position><quantity>43118</quantity></Point>
+    </Period>
+  </TimeSeries>
+</GL_MarketDocument>
