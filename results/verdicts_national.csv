@@ -20,7 +20,7 @@
 18,rte_j1_debiased,chronos2_cov,1.35917,1.20952,1.5239,0.82588,PERD,PERD
 19,rte_j1_debiased,chronos2,2.14811,1.89987,2.40862,0.81115,PERD,PERD
 20,rte_j1_debiased,mstl,2.80072,2.4793,3.19384,0.78615,PERD,PERD
-21,rte_j1_debiased,snaive_day,4.20557,3.85907,4.54209,0.88074,PERD,PERD
+21,rte_j1_debiased,snaive_day,4.20556,3.85907,4.54209,0.88074,PERD,PERD
 22,rte_j1_debiased,snaive_week,4.20942,3.44885,5.01823,0.84718,PERD,PERD
 23,rte_j1_debiased,ets_seasonal,4.28223,3.90526,4.63426,0.70018,PERD,PERD
 24,rte_j1_debiased_prev,ensemble,1.13764,1.02297,1.26358,0.85648,PERD,PERD

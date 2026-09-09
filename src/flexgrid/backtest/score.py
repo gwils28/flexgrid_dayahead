@@ -76,5 +76,7 @@ def score(protocol: dict, family: str) -> pd.DataFrame:
     po["window"] = "validation"
     po.loc[po.day >= protocol["windows"]["test"][0], "window"] = "test"
     RESULTS.mkdir(exist_ok=True)
-    po.to_parquet(RESULTS / f"per_origin_{family}.parquet")
+    # float32 et zstd : le fichier du panel passe de 49 à 29 Mo, versionnable ; tableaux et figures partent de lui.
+    po[po.select_dtypes("float64").columns] = po.select_dtypes("float64").astype("float32")
+    po.to_parquet(RESULTS / f"per_origin_{family}.parquet", compression="zstd")
     return po
