@@ -75,5 +75,28 @@ def score_cmd(families: list[str]) -> None:
         print(f, len(po), "lignes")
 
 
+@app.command("tables")
+def tables_cmd() -> None:
+    """Tableaux versionnés (results/*.csv) : résumés, verdicts, coût d'écart."""
+    from flexgrid import analysis
+
+    for k in analysis.tables(load_protocol()):
+        print(f"results/{k}.csv")
+
+
+@app.command("figures-results")
+def figures_results() -> None:
+    """Figures des blocs B, C et du coût."""
+    from flexgrid import figures_cost, figures_results
+
+    protocol = load_protocol()
+    for p in [
+        *figures_results.national_figures(protocol),
+        *figures_results.portfolio_figures(protocol),
+        *figures_cost.all_figures(protocol),
+    ]:
+        print(p)
+
+
 if __name__ == "__main__":
     app()

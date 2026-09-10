@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from flexgrid import inference, metrics
+from flexgrid import cost, inference, metrics
+from flexgrid.data import dataset
 from flexgrid.paths import RESULTS
 
 CHALLENGERS = ["ensemble", "lgbm", "chronos2_cov", "chronos2", "mstl", "snaive_day", "snaive_week", "ets_seasonal"]
@@ -35,6 +36,49 @@ def national_verdicts(protocol: dict, po: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+# Baselines du portefeuille : ce qu'un BRP sans modèle ferait (naïve S-1, RTE au prorata) et le meilleur modèle simple.
+PORTFOLIO_REFERENCES = ["snaive_week", "rte_prorata", "mstl"]
+
+
+def portfolio_verdicts(protocol: dict, po: pd.DataFrame) -> pd.DataFrame:
+    """Ratio de MAE et coût évité (€ sur l'année de test, k = 1) de chaque challenger contre chaque baseline."""
+    v = protocol["verdict"]
+    t = po[(po.window == "test") & (po.unique_id == dataset.PORTFOLIO_ID)]
+    cov = t.groupby("model").apply(lambda d: (d.cov90 * d.n).sum() / d.n.sum(), include_groups=False)
+    rows = []
+    for ref in PORTFOLIO_REFERENCES:
+        for m in ["ensemble", "lgbm", "chronos2_cov", "chronos2"]:
+            est, lo, hi = inference.compare(t, m, ref, "mae", v["bootstrap"])
+            s, slo, shi = cost.saving(po, dataset.PORTFOLIO_ID, m, ref, v["bootstrap"])
+            c = float(cov.get(f"{m}_conformal", cov[m]))
+            rows.append(
+                {
+                    "reference": ref,
+                    "model": m,
+                    "mae_ratio": est,
+                    "ci_low": lo,
+                    "ci_high": hi,
+                    "saving_eur": s,
+                    "saving_low": slo,
+                    "saving_high": shi,
+                    "cov90_raw": float(cov[m]),
+                    "verdict": inference.verdict(lo, hi, float(cov[m]), tuple(v["coverage90_band"])),
+                    "verdict_with_conformal": inference.verdict(lo, hi, c, tuple(v["coverage90_band"])),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def national_cost_scaled(protocol: dict, po: pd.DataFrame) -> pd.DataFrame:
+    """Coût annuel du national ramené à l'énergie du brief (comparaison seulement, SPEC angle mort 6)."""
+    test = protocol["windows"]["test"]
+    f = cost.scale_factor(dataset.load("national"), test[0], test[1], protocol["portfolio"]["scale_national_to_gwh"])
+    t = cost.annual(po, "FR", k_scenarios=protocol["cost"]["k_scenarios"])
+    num = t.select_dtypes("number").drop(columns=["days", "mape"])
+    t[num.columns] = num * f
+    return t.assign(scale_factor=f)
+
+
 def tables(protocol: dict) -> dict[str, pd.DataFrame]:
     out = {}
     po = pd.read_parquet(RESULTS / "per_origin_national.parquet")
@@ -48,6 +92,9 @@ def tables(protocol: dict) -> dict[str, pd.DataFrame]:
         out["summary_portfolio"] = metrics.summary(pf, extra=("bias", "cost_eur", "energy_mwh"))
         panel = s[(s.window == "test") & (s.unique_id != "FLEXGRID")]
         out["summary_panel"] = metrics.summary(panel)
+        out["verdicts_portfolio"] = portfolio_verdicts(protocol, s)
+        out["cost_portfolio"] = cost.annual(s, dataset.PORTFOLIO_ID, k_scenarios=protocol["cost"]["k_scenarios"])
+    out["cost_national_scaled"] = national_cost_scaled(protocol, po)
     for k, d in out.items():
         d.round(5).to_csv(RESULTS / f"{k}.csv")
     return out
