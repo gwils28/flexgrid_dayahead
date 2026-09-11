@@ -293,3 +293,107 @@ def national_figures(protocol: dict) -> list[Path]:
         )
     )
     return out
+
+
+def panel_scatter(po: pd.DataFrame, a: str, b: str, path: Path, title: str) -> Path:
+    """MAPE de deux modèles, segment par segment, sur l'année de test : qui gagne où."""
+    t = po[(po.window == "test") & (po.unique_id != "FLEXGRID")]
+    p = t.pivot_table(index="unique_id", columns="model", values="mape")[[a, b]] * 100
+    band = p.index.str.split("_").str[1]
+    fig, ax = plt.subplots(figsize=(6.5, 5.8))
+    lim = [0, float(np.ceil(p.max().max())) + 0.5]
+    ax.plot(lim, lim, color=P.INK_2, lw=1, ls=":")
+    for i, k in enumerate(sorted(set(band))):
+        d = p[band == k]
+        ax.plot(d[a], d[b], "o", color=P.SLOTS[i], ms=8, markeredgecolor=P.SURFACE, markeredgewidth=1.2, label=k)
+    if "FLEXGRID" in po.unique_id.unique():
+        pf = _test(po, "FLEXGRID").pivot_table(index="day", columns="model", values="mape")[[a, b]].mean() * 100
+        ax.plot(pf[a], pf[b], "*", color=P.INK, ms=16, markeredgecolor=P.SURFACE, label="portefeuille FlexGrid")
+    wins = int((p[a] < p[b]).sum())
+    ax.set_xlabel(f"MAPE {P.label(a)} (%)")
+    ax.set_ylabel(f"MAPE {P.label(b)} (%)")
+    ax.set_xlim(lim)
+    ax.set_ylim(lim)
+    P.titled(ax, title, f"{wins} segments sur {len(p)} sous la diagonale pour {P.label(a)} ; couleur : tranche")
+    ax.legend(fontsize=8, title="tranche", title_fontsize=8)
+    fig.tight_layout()
+    return P.save(fig, path)
+
+
+def portfolio_figures(protocol: dict) -> list[Path]:
+    from flexgrid.backtest import inputs as I
+    from flexgrid.backtest.score import add_derived, load_forecasts
+    from flexgrid.data import dataset
+    from flexgrid.paths import RESULTS
+
+    P.setup()
+    uid = dataset.PORTFOLIO_ID
+    boot = protocol["verdict"]["bootstrap"]
+    test0 = protocol["windows"]["test"][0]
+    po = pd.read_parquet(RESULTS / "per_origin_segments.parquet")
+    fcs = add_derived(load_forecasts("segments"), "segments", protocol)
+    fcs = {k: v[v.unique_id == uid] for k, v in fcs.items()}
+    act = I.series("segments")
+    act = act[act.unique_id == uid]
+    main = ["ensemble", "lgbm", "chronos2_cov", "rte_prorata"]
+    out = [
+        forest(
+            po,
+            uid,
+            ["rte_prorata", "snaive_week"],
+            boot,
+            ["ensemble", "lgbm", "chronos2_cov", "chronos2", "mstl", "rte_prorata", "snaive_week"],
+            OUT / "portfolio_forest.png",
+            "Portefeuille FlexGrid : contre les baselines d'un BRP sans modèle",
+        )
+    ]
+    hm = pd.concat([hourly_mae(fcs[m], act, test0).assign(model=m) for m in main])
+    out.append(by_hour(hm, main, OUT / "portfolio_by_hour.png", "Portefeuille : erreur selon l'heure"))
+    out.append(
+        monthly(
+            po,
+            uid,
+            ["ensemble", "lgbm", "chronos2_cov"],
+            "rte_prorata",
+            OUT / "portfolio_monthly.png",
+            "Portefeuille : mois par mois, contre RTE au prorata",
+        )
+    )
+    out.append(
+        calibration(
+            po,
+            uid,
+            ["ensemble", "lgbm", "chronos2_cov"],
+            OUT / "portfolio_calibration.png",
+            "Portefeuille : les intervalles",
+        )
+    )
+    out.append(
+        day_types(
+            po,
+            uid,
+            ["ensemble", "lgbm", "chronos2_cov"],
+            "rte_prorata",
+            OUT / "portfolio_day_types.png",
+            "Portefeuille : par type de jour, contre RTE au prorata",
+        )
+    )
+    out.append(
+        oracle(po, uid, OUT / "portfolio_oracle_weather.png", "Portefeuille : ce que coûte l'erreur de prévision météo")
+    )
+    out.append(
+        fan(
+            fcs,
+            act.set_index("ds").y,
+            ["2026-01-06", "2025-12-25", "2025-08-12"],
+            ["lgbm", "chronos2_cov", "rte_prorata"],
+            OUT / "portfolio_fans.png",
+            "Portefeuille : trois jours de l'année de test",
+            "MW",
+            1.0,
+        )
+    )
+    out.append(
+        panel_scatter(po, "lgbm", "chronos2_cov", OUT / "panel_lgbm_vs_chronos.png", "Panel : LightGBM ou Chronos-2 ?")
+    )
+    return out

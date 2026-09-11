@@ -98,4 +98,87 @@ détail.
 
 ## Le portefeuille FlexGrid
 
-(Section complétée quand le backtest du panel est terminé.)
+Nombres : `results/summary_portfolio.csv`, `results/verdicts_portfolio.csv`, `results/summary_panel.csv`.
+
+### La réponse en une phrase (portefeuille)
+
+> Sur le portefeuille (3 517 sites tertiaires, ~93 MW en moyenne), le mélange a un MAPE de **2,72 %**, contre
+> **5,59 %** pour la prévision de RTE ramenée au portefeuille et **7,55 %** pour la naïve hebdomadaire. Son MAE vaut
+> 0,49 fois celui de RTE au prorata (IC 95 % [0,44 ; 0,54]) et 0,36 fois celui de la naïve ([0,32 ; 0,40]), avec une
+> couverture 90 % de 0,85 dans la bande.
+
+Ici, contrairement au national, il n'y a pas de RTE débiaisée qui tienne : RTE ne prévoit pas le portefeuille. Le
+meilleur raccourci d'un BRP sans modèle, « RTE J-1 × la part récente du portefeuille, par demi-heure » (ajouté
+après le protocole, voir les notes d'implémentation), fait 5,6 % : c'est presque exactement les 6 % du brief. **Le
+MAPE de 6 % décrit dans le brief est donc celui d'une méthode sans modèle, et un modèle le divise par deux.**
+
+![Portefeuille : contre les baselines](figures/portfolio_forest.png)
+
+Pourquoi l'écart est-il bien plus grand ici que sur le national ? Le portefeuille ne ressemble pas à la France :
+pic de bureau, dimanche plat, climatisation (bloc A). Une prévision nationale, même mise à l'échelle par demi-heure,
+porte la forme du national. Et l'information fraîche de RTE ne vaut rien pour ces 3 517 sites-là.
+
+### L'erreur selon l'heure
+
+![Portefeuille par heure](figures/portfolio_by_hour.png)
+
+RTE au prorata se trompe surtout aux heures ouvrées (8 h-19 h), là où le profil tertiaire s'écarte le plus du
+profil national. Nos modèles ont une erreur presque plate le jour, autour de 3,5 MW.
+
+### Mois par mois, et par type de jour
+
+![Portefeuille mois par mois](figures/portfolio_monthly.png)
+
+Le mélange bat RTE au prorata tous les mois (et 86 % des jours). L'hiver reste la saison difficile en valeur
+absolue (MAE de 3,38 MW de décembre à février contre 2,05 MW en juillet-août), mais l'avantage relatif ne disparaît
+pas comme sur le national.
+
+![Portefeuille par type de jour](figures/portfolio_day_types.png)
+
+Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où un modèle perd. Sur les ponts, tous perdent contre
+RTE au prorata : un pont dans le tertiaire, c'est la moitié des bureaux fermés, ce qu'aucune variable du calendrier
+ne mesure bien. Sur les fériés, LightGBM (0,42) fait bien mieux que Chronos-2 (1,25), comme sur le national.
+Noël le montre :
+
+![Trois jours, portefeuille](figures/portfolio_fans.png)
+
+Le 25 décembre, Chronos-2 et RTE au prorata prévoient une journée de travail (MAE de 19 MW). LightGBM sait que
+c'est férié (8 MW) ; le mélange, qui moyenne les deux, est entre les deux (14 MW). **Le mélange hérite des erreurs
+de Chronos-2 les jours fériés** : une règle « LightGBM seul les jours fériés » serait un gain facile, non
+pré-enregistré, donc pas appliqué ici.
+
+### Les intervalles
+
+![Calibration portefeuille](figures/portfolio_calibration.png)
+
+Même diagnostic qu'au national : LightGBM couvre 75 % au lieu de 90 %, le mélange 85 %, Chronos-2 + covariables
+84 %. La réparation conforme ramène tous les modèles à 0,90-0,91. Mois par mois, la couverture réparée du mélange
+descend à 0,78 en novembre : la fenêtre de 56 jours suit l'arrivée de l'hiver avec retard.
+
+### La météo parfaite
+
+![Météo parfaite, portefeuille](figures/portfolio_oracle_weather.png)
+
+Même conclusion qu'au national : la météo observée ne retire que 5 % du MAE. Elle compte surtout en hiver.
+
+### Le panel : LightGBM ou Chronos-2, segment par segment
+
+![Panel](figures/panel_lgbm_vs_chronos.png)
+
+Sur les 81 segments du panel, LightGBM a un MAPE plus faible que Chronos-2 + covariables sur 69. Les exceptions ne
+sont pas au hasard : **les trois segments P4 chauffés à l'électricité** (84, 76, 93_P4_ENT1), les plus difficiles
+du panel (MAPE de 6 à 11 %), sont mieux prévus par Chronos-2. Le mélange fait mieux que LightGBM seul sur 72
+segments sur 81. C'est la question du router (bloc 03) : y a-t-il des segments où il vaut mieux choisir un modèle
+plutôt que les mélanger ?
+
+| Portefeuille, année de test | MAE (MW) | MAPE | MASE | couverture 90 % |
+|---|---|---|---|---|
+| Mélange LightGBM + Chronos-2 | 2,57 | 2,72 % | 0,371 | 0,852 |
+| LightGBM | 2,64 | 2,78 % | 0,381 | 0,748 |
+| Chronos-2 + covariables | 3,16 | 3,36 % | 0,457 | 0,844 |
+| Chronos-2 sans covariables | 4,53 | 4,77 % | 0,654 | 0,875 |
+| MSTL | 5,15 | 5,39 % | 0,743 | 0,955 |
+| RTE J-1 au prorata | 5,28 | 5,59 % | 0,761 | (ponctuelle) |
+| Naïve S-1 | 7,17 | 7,55 % | 1,035 | 0,866 |
+| ETS saisonnier | 10,48 | 11,27 % | 1,513 | 0,832 |
+| Naïve J-1 | 12,42 | 12,90 % | 1,794 | 0,874 |

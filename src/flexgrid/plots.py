@@ -36,6 +36,7 @@ MODEL_COLORS = {
     "ets_seasonal": SLOTS[7],
     "rte_j1": INK,
     "rte_j1_debiased": MUTED,
+    "rte_prorata": INK,
 }
 MODEL_LABELS = {
     "snaive_day": "Naïve J-1 (48)",
@@ -49,6 +50,7 @@ MODEL_LABELS = {
     "ensemble": "Mélange LGBM + Chronos-2",
     "rte_j1": "RTE J-1",
     "rte_j1_debiased": "RTE J-1 débiaisée",
+    "rte_prorata": "RTE J-1 au prorata",
 }
 
 
