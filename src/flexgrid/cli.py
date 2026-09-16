@@ -98,5 +98,17 @@ def figures_results() -> None:
         print(p)
 
 
+@app.command("router")
+def router_cmd() -> None:
+    """Complexity Router : apprentissage sur la validation, évaluation sur le test, dérive des routes."""
+    import pandas as pd
+
+    from flexgrid import router
+    from flexgrid.paths import RESULTS
+
+    out = router.run(load_protocol(), pd.read_parquet(RESULTS / "per_origin_segments.parquet"))
+    print(json.dumps(out, indent=2, ensure_ascii=False, default=float))
+
+
 if __name__ == "__main__":
     app()
