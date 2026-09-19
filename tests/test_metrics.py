@@ -46,3 +46,13 @@ def test_block_bootstrap_covers_identical_series_with_ratio_one():
     a = np.random.default_rng(0).normal(10, 1, 200)
     est, lo, hi = inference.bootstrap(inference.ratio_of_means, [a, a], 7, 200, 1)
     assert est == lo == hi == 1.0
+
+
+def test_psi_is_zero_on_identical_samples_and_large_on_a_shift():
+    from flexgrid.monitoring import alerts, psi
+
+    a = np.random.default_rng(0).normal(size=5000)
+    assert psi(a, a) < 1e-9
+    assert psi(a, a + 1) > 0.25
+    r = pd.Series([0.9] * 5 + [1.1] * 20)
+    assert alerts(r, persist=14).sum() == 7

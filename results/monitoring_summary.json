@@ -1,0 +1,34 @@
+{
+  "alerts": {
+    "national": {
+      "ensemble": {
+        "seuil_1": 208,
+        "seuil_auto": 52,
+        "niveau_validation": 1.092
+      },
+      "lgbm": {
+        "seuil_1": 215,
+        "seuil_auto": 12,
+        "niveau_validation": 1.224
+      }
+    },
+    "portfolio": {
+      "ensemble": {
+        "seuil_1": 0,
+        "seuil_auto": 5,
+        "niveau_validation": 0.53
+      },
+      "lgbm": {
+        "seuil_1": 0,
+        "seuil_auto": 26,
+        "niveau_validation": 0.54
+      }
+    }
+  },
+  "drift_max": {
+    "conso nationale": 0.656,
+    "portefeuille": 0.366,
+    "prix day-ahead": 3.47,
+    "température": 1.317
+  }
+}
