@@ -32,3 +32,30 @@ récentes en dernier.
 - Chronos-2 est entraîné sur 21 quantiles de 0,01 à 0,99 : la grille du protocole (0,05 à 0,95) est native, pas le
   piège de Chronos-Bolt vu dans W25.
 - Les modèles statistiques reçoivent les pas imputés comme entrées (le trou d'octobre), jamais comme cibles.
+
+## Bloc C : backtest
+
+- **Affirmation corrigée par une mesure : la sous-couverture de LightGBM.** L'angle mort 7 du SPEC l'attribuait au
+  décalage train/serve (météo observée à l'apprentissage, prévue à l'inférence). Avec la météo observée en entrée, la
+  couverture 90 % reste à 0,77 (0,76 avec la météo prévue) : la cause principale est la régression quantile, qui
+  s'ajuste à ses données d'apprentissage. Le SPEC n'est pas réécrit ; la correction est ici et au README du bloc C.
+- **Ajout non pré-enregistré, déclaré comme tel : le benchmark `rte_prorata`** pour le portefeuille (prévision RTE
+  nationale multipliée par la part moyenne du portefeuille, par demi-heure locale, sur les 28 jours connus jusqu'à
+  J-2 ; la part absorbe au passage le biais de RTE). RTE ne publie rien à
+  l'échelle d'un portefeuille ; sans ce benchmark, la seule référence du portefeuille serait une naïve. Il est
+  ajouté comme référence supplémentaire et ne remplace aucun critère.
+- La réparation conforme utilise les erreurs des 56 origines précédentes : elle suit les saisons avec retard. En
+  novembre-décembre, quand l'erreur monte vite, la couverture réparée tombe sous la bande. C'est une propriété de
+  la fenêtre, pas un bug ; une fenêtre plus courte suivrait mieux mais serait plus bruitée.
+- Les prévisions brutes (`results/forecasts/`) ne sont pas versionnées (plusieurs centaines de Mo) ; les tableaux
+  par origine (`results/per_origin_*.parquet`) le sont, et toutes les figures et tous les verdicts en partent.
+- Sursouscription des cœurs : LightGBM (32 threads) lancé en même temps qu'un autre calcul LightGBM a multiplié la
+  durée par plus de 5. Les calculs lourds sont lancés l'un après l'autre.
+
+## Bloc E : monitoring
+
+- **Un seuil d'alerte naïf est inutilisable.** « Alerter quand le MAE glissant sur 28 jours dépasse celui de RTE
+  débiaisée » aurait sonné 208 jours sur 365 pour le mélange et 215 pour LightGBM (alerte = 14 jours consécutifs
+  au-dessus). Le modèle est moins bon que RTE débiaisée hors de l'été et de l'automne : le seuil décrit un état connu, il ne
+  détecte rien. Le seuil retenu est auto-référencé : 1,15 fois le ratio médian du modèle sur la validation
+  (février-juin 2025), 14 jours consécutifs au-dessus. Il donne 52 jours d'alerte pour le mélange, 12 pour LightGBM.
