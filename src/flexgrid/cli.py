@@ -110,5 +110,26 @@ def router_cmd() -> None:
     print(json.dumps(out, indent=2, ensure_ascii=False, default=float))
 
 
+@app.command("figures-router")
+def figures_router() -> None:
+    """Figures du router et du cold-start (après `router` et `coldstart`)."""
+    from flexgrid import figures_router
+
+    for p in figures_router.all_figures(load_protocol()):
+        print(p)
+
+
+@app.command("coldstart")
+def coldstart_cmd(score_only: bool = False) -> None:
+    """Cold-start : historiques tronqués à 7, 14, 28, 56 jours sur trois régions tenues à l'écart."""
+    from flexgrid import coldstart
+
+    protocol = load_protocol()
+    if not score_only:
+        fc = coldstart.run(protocol, log=lambda s: print(s, flush=True))
+        print(len(fc), "lignes")
+    print(coldstart.score(protocol).round(4).to_string(index=False))
+
+
 if __name__ == "__main__":
     app()
