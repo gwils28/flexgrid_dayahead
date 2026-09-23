@@ -93,6 +93,36 @@ def drift(d: pd.DataFrame, path: Path) -> Path:
     return P.save(fig, path)
 
 
+def coldstart(cs: pd.DataFrame, n_units: int, n_origins: int, path: Path) -> Path:
+    """WAPE selon la longueur d'historique ; pointillés : les mêmes modèles avec tout l'historique (backtest)."""
+    fig, ax = plt.subplots(figsize=(9, 5))
+    lengths = sorted(L for L in cs.history_days.unique() if L > 0)
+    for m in ["snaive_week", "chronos2", "chronos2_cov", "chronos2_fewshot", "lgbm"]:
+        d = cs[(cs.model == m) & (cs.history_days > 0)].set_index("history_days").reindex(lengths)
+        if d.wape.isna().all():
+            continue
+        # Le few-shot est une variante de Chronos-2 + covariables : même couleur, trait et marqueur différents.
+        fewshot = m == "chronos2_fewshot"
+        c = P.color("chronos2_cov") if fewshot else P.color(m)
+        ax.plot(range(len(lengths)), d.wape * 100, "s--" if fewshot else "o-", color=c, label=P.label(m), ms=7)
+        full = cs[(cs.model == m) & (cs.history_days == 0)]
+        if len(full):
+            ax.axhline(full.wape.iloc[0] * 100, color=c, lw=1, ls=":")
+    ax.set_xticks(range(len(lengths)), [f"{L} jours" for L in lengths])
+    ax.set_xlabel("historique du segment à l'émission")
+    ax.set_ylabel("WAPE (%)")
+    ax.set_ylim(bottom=0)
+    P.titled(
+        ax,
+        "Cold-start : que vaut chaque modèle sur un segment presque neuf ?",
+        f"{n_units} segments de 3 régions tenues à l'écart, {n_origins} origines ; "
+        "pointillés : même modèle, historique complet",
+    )
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    return P.save(fig, path)
+
+
 def all_figures(protocol: dict) -> list[Path]:
     P.setup()
     summary = json.loads((RESULTS / "router_summary.json").read_text())
@@ -102,4 +132,14 @@ def all_figures(protocol: dict) -> list[Path]:
         policies(summary, OUT / "router_policies.png"),
         units(u, summary["stump"], OUT / "router_units.png"),
         drift(d, OUT / "router_drift.png"),
+        *_coldstart_figures(),
     ]
+
+
+def _coldstart_figures() -> list[Path]:
+    if not (RESULTS / "coldstart_summary.csv").exists():
+        return []
+    po = pd.read_parquet(RESULTS / "coldstart_per_origin.parquet")
+    po = po[po.history_days > 0]
+    cs = pd.read_csv(RESULTS / "coldstart_summary.csv")
+    return [coldstart(cs, po.unique_id.nunique(), po.day.nunique(), OUT / "coldstart.png")]
