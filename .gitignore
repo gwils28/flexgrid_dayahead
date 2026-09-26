@@ -22,3 +22,6 @@ report/figures/
 results/forecasts/
 prod_store/
 .secrets/
+dagster_home/history/
+dagster_home/schedules/
+dagster_home/.logs_queue/

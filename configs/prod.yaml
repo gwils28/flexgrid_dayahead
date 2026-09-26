@@ -1,0 +1,9 @@
+# Configuration du service J-1. Le modèle nommé est choisi d'après le backtest (02_backtest/README.md).
+store: prod_store                      # nominations et prévisions servies par l'API
+mlflow_tracking_uri: sqlite:///mlruns/mlflow.db
+families:
+  national: {unique_id: FR}
+  segments: {unique_id: FLEXGRID}      # le service ne nomme que le portefeuille
+nomination_model: ensemble             # lgbm | chronos2_cov | ensemble
+fallback_model: lgbm                   # si Chronos-2 (GPU) échoue ou dépasse son délai
+chronos_timeout_s: 300
