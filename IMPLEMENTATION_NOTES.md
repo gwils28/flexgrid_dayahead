@@ -59,3 +59,25 @@ récentes en dernier.
   au-dessus). Le modèle est moins bon que RTE débiaisée hors de l'été et de l'automne : le seuil décrit un état connu, il ne
   détecte rien. Le seuil retenu est auto-référencé : 1,15 fois le ratio médian du modèle sur la validation
   (février-juin 2025), 14 jours consécutifs au-dessus. Il donne 52 jours d'alerte pour le mélange, 12 pour LightGBM.
+
+## Router et cold-start
+
+- Le stump du router est appris sur des variables de 8 semaines ; celui de la dérive, sur des variables de
+  28 jours, pour que la variable soit calculée de la même façon à l'apprentissage et à l'application (leçon W25).
+  Les deux stumps ne choisissent pas la même variable (coefficient de variation, force de la saisonnalité
+  journalière) : sur 81 unités, le choix d'un seuil est instable, ce que la dérive des routes montre aussi.
+- Cold-start, 7 jours d'historique : LightGBM reçoit un retard de 14 jours manquant, qu'il n'a jamais vu à
+  l'apprentissage (les lignes d'apprentissage ont toutes leurs retards). Un modèle appris avec des retards masqués
+  ferait mieux ; ce n'était pas pré-enregistré, et la naïve est de toute façon le bon choix à 7 jours.
+- La naïve hebdomadaire du backtest décale de 336 pas UTC, celle du cold-start de 7 jours à la même heure locale.
+  Elles ne diffèrent que sur les deux semaines des changements d'heure (WAPE 6,7 % contre 6,6 % sur les segments
+  du cold-start).
+
+## Production
+
+- **Fuite trouvée en rejouant le passé.** La première matérialisation du 26 octobre 2025 a réutilisé, pour le
+  national, le champion du registre appris pour le 30 juin 2026. Un *backfill* rejoue le passé avec un registre
+  qui contient le futur. Règle ajoutée et testée : un champion n'est réutilisé que s'il a été appris pour un jour
+  de la semaine qui précède le jour prévu (`dagster_defs.needs_refit`).
+- Le service et le backtest donnent les mêmes quantiles quand ils réapprennent à la même date (Chronos-2 : toujours ;
+  LightGBM : le mardi). C'est le contrôle qui relie les verdicts du backtest au code servi.
