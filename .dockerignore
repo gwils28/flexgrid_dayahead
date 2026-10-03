@@ -1,0 +1,14 @@
+# Les données, résultats, registre et magasin sont montés en volume : jamais dans l'image.
+data/
+results/
+mlruns/
+prod_store/
+dagster_home/storage/
+logs/
+docs/
+report/
+.secrets/
+.env
+.venv/
+**/__pycache__/
+*/figures/

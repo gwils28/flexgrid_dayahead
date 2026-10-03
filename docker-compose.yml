@@ -1,0 +1,29 @@
+# Trois services sur la même image : API des quantiles, orchestrateur Dagster, interface MLflow.
+#   docker compose up --build
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    volumes: &data
+      - ./data:/app/data
+      - ./prod_store:/app/prod_store
+      - ./mlruns:/app/mlruns
+      - ./dagster_home:/app/dagster_home
+    secrets: [entsoe_token]
+  dagster:
+    build: .
+    command: ["uv", "run", "--no-sync", "dagster", "dev", "-h", "0.0.0.0", "-p", "3000", "-m", "flexgrid.prod.dagster_defs"]
+    ports: ["3000:3000"]
+    volumes: *data
+    secrets: [entsoe_token]
+    environment:
+      ENTSOE_TOKEN_FILE: /run/secrets/entsoe_token
+  mlflow:
+    build: .
+    command: ["uv", "run", "--no-sync", "mlflow", "ui", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "sqlite:///mlruns/mlflow.db"]
+    ports: ["5000:5000"]
+    volumes: *data
+
+secrets:
+  entsoe_token:
+    file: ./.secrets/entsoe_token   # absent du dépôt ; un fichier vide suffit sans token

@@ -72,6 +72,10 @@ Energy-Charts. Le client est testé sur une réponse XML enregistrée.
 - **Un magasin de variables.** Les variables sont recalculées à chaque prévision (quelques secondes) : à cette
   échelle, un *feature store* n'apporterait rien de mesurable.
 - **L'envoi de la nomination** au marché ou au gestionnaire d'équilibre : le service s'arrête au fichier.
+- **Une image plus légère.** L'image construite (`docker build -t flexgrid-dayahead:local .`) sert l'API en
+  conteneur, vérifié sur `/health` et `/nomination`. Elle pèse 6,9 Go compressés (20,8 Go sur disque), presque tout
+  pour torch et CUDA. L'API seule n'a besoin ni de torch ni de LightGBM : une image séparée pour l'API la
+  ramènerait à quelques centaines de Mo.
 - **Chronos-2 dans le conteneur** a besoin d'un GPU (`deploy.resources` de Compose) ; sans GPU, le repli LightGBM
   prend le relais, ce qui coûte 3 % de MAE sur le portefeuille d'après le backtest (2,64 MW contre 2,57).
 
