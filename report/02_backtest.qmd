@@ -1,0 +1,5 @@
+---
+title: "B-C · Modèles et backtest"
+---
+
+{{< include _inc/02_backtest.md >}}

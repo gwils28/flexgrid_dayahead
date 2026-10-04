@@ -1,0 +1,5 @@
+---
+title: "A · Les données, avant tout modèle"
+---
+
+{{< include _inc/01_donnees.md >}}

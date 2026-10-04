@@ -25,3 +25,5 @@ prod_store/
 dagster_home/history/
 dagster_home/schedules/
 dagster_home/.logs_queue/
+report/_inc/
+report/.quarto/

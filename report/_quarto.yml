@@ -1,0 +1,45 @@
+project:
+  type: website
+  output-dir: ../docs
+  resources:
+    - figures/
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+
+lang: fr
+
+website:
+  title: "FlexGrid · nomination J-1"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Vue d'ensemble
+      - href: 01_donnees.qmd
+        text: "A · Données"
+      - href: 02_backtest.qmd
+        text: "B-C · Backtest"
+      - href: 03_router.qmd
+        text: "Router & cold-start"
+      - href: 04_cout.qmd
+        text: "€ · Coût d'écart"
+      - href: 05_production.qmd
+        text: "D-E · Production"
+    right:
+      - icon: github
+        href: https://github.com/gwils28/flexgrid_dayahead
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    fig-align: center
+    code-fold: true
+    callout-appearance: simple
+    css: styles.css

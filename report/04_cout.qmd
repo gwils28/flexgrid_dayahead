@@ -1,0 +1,5 @@
+---
+title: "Du MW à l'euro"
+---
+
+{{< include _inc/04_cout.md >}}

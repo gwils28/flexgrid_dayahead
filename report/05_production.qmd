@@ -1,0 +1,5 @@
+---
+title: "D-E · Production et monitoring"
+---
+
+{{< include _inc/05_production.md >}}
