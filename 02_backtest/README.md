@@ -135,7 +135,7 @@ pas comme sur le national.
 
 ![Portefeuille par type de jour](figures/portfolio_day_types.png)
 
-Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où un modèle perd. Sur les ponts, tous perdent contre
+Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où l'un de ces trois modèles perd. Sur les ponts, tous perdent contre
 RTE au prorata : un pont dans le tertiaire, c'est la moitié des bureaux fermés, ce qu'aucune variable du calendrier
 ne mesure bien. Sur les fériés, LightGBM (0,42) fait bien mieux que Chronos-2 (1,25), comme sur le national.
 Noël le montre :
@@ -151,7 +151,7 @@ pré-enregistré, donc pas appliqué ici.
 
 ![Calibration portefeuille](figures/portfolio_calibration.png)
 
-Même diagnostic qu'au national : LightGBM couvre 75 % au lieu de 90 %, le mélange 85 %, Chronos-2 + covariables
+Même diagnostic qu'au national : LightGBM couvre 75 % au lieu de 90 % (76 % au national), le mélange 85 %, Chronos-2 + covariables
 84 %. La réparation conforme ramène tous les modèles à 0,90-0,91. Mois par mois, la couverture réparée du mélange
 descend à 0,78 en novembre : la fenêtre de 56 jours suit l'arrivée de l'hiver avec retard.
 
@@ -159,7 +159,8 @@ descend à 0,78 en novembre : la fenêtre de 56 jours suit l'arrivée de l'hiver
 
 ![Météo parfaite, portefeuille](figures/portfolio_oracle_weather.png)
 
-Même conclusion qu'au national : la météo observée ne retire que 5 % du MAE. Elle compte surtout en hiver.
+Même conclusion qu'au national : la météo observée ne retire que 5 % du MAE. En MW, le gain est le plus grand en
+hiver ; en proportion, il est du même ordre (6 à 8 %) en hiver, au printemps et en juillet.
 
 ### Le panel : LightGBM ou Chronos-2, segment par segment
 

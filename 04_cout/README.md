@@ -48,7 +48,7 @@ que l'hiver fait la moitié du coût.
 ![Coût mensuel](figures/cost_monthly.png)
 
 De novembre à janvier, trois mois font 47 % du coût annuel du mélange : la consommation et l'erreur montent
-avec le chauffage, et le prix monte avec elles. Un mois d'hiver mal prévu coûte plus qu'un trimestre d'été.
+avec le chauffage, et le prix monte avec elles. Janvier seul (293 k€) coûte plus que tout l'été de juin à août (269 k€).
 
 ## Le coût n'est pas un MAE déguisé
 
@@ -67,9 +67,9 @@ plutôt que le MAE** pondérerait ses erreurs par le prix attendu. Ce n'est pas 
 Le SPEC (angle mort 6) annonçait que le national ramené à 800 GWh sous-estimerait le coût d'un portefeuille réel.
 Mesuré (facteur d'échelle 0,0018) :
 
-| Mélange, 800 GWh | Écart (MWh/an) | Coût k = 1 |
+| Mélange | Écart (MWh/an) | Coût k = 1 |
 |---|---|---|
-| National mis à l'échelle | 14 155 | 0,92 M€ |
+| National mis à l'échelle de 800 GWh | 14 155 | 0,92 M€ |
 | Portefeuille FlexGrid réel (815 GWh) | 22 514 | 1,38 M€ |
 
 Le national moyenne des millions de sites : relativement à son énergie, il est 1,6 fois plus facile à prévoir.

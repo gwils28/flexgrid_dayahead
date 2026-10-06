@@ -38,7 +38,7 @@ Nombres : `results/router_summary.json`, `results/router_units.csv`, `results/ro
 - Le stump appris route **un seul segment** vers Chronos-2 (coefficient de variation ≥ 0,61 : 84_P4_ENT1). Il gagne
   0,4 % sur « toujours LightGBM ».
 - Même le router oracle, qui connaît la bonne réponse, ne gagne que 1,8 %. **Le plafond du routage est bas** :
-  LightGBM est meilleur sur 66 segments sur 81, et là où Chronos-2 gagne, il gagne peu.
+  LightGBM a le MASE moyen le plus bas sur 66 segments sur 81, et là où Chronos-2 gagne, il gagne peu.
 - Le mélange gagne 6,8 %, quatre fois l'oracle. Il bat l'oracle sur 70 segments sur 81. Deux modèles qui se trompent
   à des moments différents se corrigent l'un l'autre *dans le temps*, alors qu'un router ne peut choisir qu'une
   fois par segment.
@@ -47,7 +47,7 @@ Nombres : `results/router_summary.json`, `results/router_units.csv`, `results/ro
 
 ![Unités](figures/router_units.png)
 
-Chronos-2 fait mieux que LightGBM sur 15 segments. Ce ne sont pas des segments au hasard : les trois segments
+En MASE, Chronos-2 fait mieux que LightGBM sur 15 segments (12 en MAPE, bloc C). Ce ne sont pas des segments au hasard : les trois segments
 **P4 chauffés à l'électricité** (84, 76, 93_P4_ENT1, ceux du bloc A) et 5 des 6 segments **P6** (les plus
 gros sites). Ce sont les segments dont la forme change le plus avec la saison. Le stump n'en attrape qu'un : les
 deux autres P4 ont un coefficient de variation banal sur les 8 semaines d'hiver-printemps qui précèdent le test.
@@ -88,7 +88,7 @@ complet, tous coupés au même instant.
 |---|---|---|---|---|---|
 | Naïve S-1 | **6,6 %** | 6,6 % | 6,6 % | 6,6 % | 6,7 % |
 | LightGBM (jamais vu le segment) | 12,6 % | **3,9 %** | **3,9 %** | 3,9 % | 3,4 % |
-| Chronos-2 + covariables | 19,2 % | 4,4 % | 3,9 % | **3,7 %** | 3,7 % |
+| Chronos-2 + covariables | 19,2 % | 4,4 % | 3,9 % | **3,6 %** | 3,7 % |
 | Chronos-2 few-shot in-context | 19,7 % | 4,4 % | 4,0 % | 3,8 % | (non simulé) |
 | Chronos-2 sans covariables | 25,2 % | 5,6 % | 4,8 % | 4,6 % | (non simulé) |
 | Mélange | | | | | 3,1 % |
@@ -102,7 +102,7 @@ complet, tous coupés au même instant.
 2. **Dès 14 jours, LightGBM appris sur les autres régions est devant** (3,9 %), à 0,5 point de ce qu'il fait avec
    tout l'historique. Un modèle global n'a besoin que de ses retards : 14 jours lui suffisent.
 3. **Chronos-2 rattrape à 28-56 jours.** À 56 jours, il a tout son contexte (2 048 pas, soit 42,7 jours) et fait
-   exactement comme en backtest.
+   aussi bien qu'en backtest (3,6 % contre 3,7 %).
 4. **Le few-shot in-context n'aide pas.** Donner à Chronos-2 les segments frères des autres régions ne change rien à
    14 jours et dégrade légèrement à 28 et 56 jours. Le brief proposait le few-shot comme réponse au cold-start.
    Sur ce panel, la réponse est une naïve pendant deux semaines, puis le modèle global.

@@ -90,7 +90,7 @@ Nombres : `results/monitoring_summary.json`, `results/monitoring_data_drift.csv`
 
 Chaque mois de l'année de test est comparé au même mois de l'année précédente (PSI et KS). La référence est
 saisonnière, sinon tout mois d'hiver « dériverait » par rapport à l'été. Seuil usuel : PSI > 0,25.
-- **Le prix dérive presque tout le temps** (7 mois sur 12, PSI max 3,47 en février 2026). Ce n'est pas une alerte
+- **Le prix dérive la plupart des mois** (7 mois sur 12, PSI max 3,47 en février 2026). Ce n'est pas une alerte
   utile : le prix change de régime d'une année à l'autre. Il ne sert qu'à valoriser l'erreur, pas à prévoir.
 - **Février 2026 dérive sur toutes les variables** : température (PSI 1,32), consommation nationale (0,66),
   portefeuille (0,37). Février 2026 a été 3 °C plus doux que février 2025 (9,2 °C contre 6,3 °C en moyenne
@@ -122,8 +122,8 @@ quand le ratio remonte vers 0,75-0,85.
 Le panneau du bas de chaque figure suit la couverture de l'intervalle 90 % sur 28 jours, la question du brief :
 « un 90 % qui dérive à 70 % = perte d'argent ». C'est arrivé : la couverture brute de LightGBM descend à 0,52 sur le
 portefeuille en janvier, et sous 0,65 au national. La réparation conforme la ramène dans la bande la plupart du
-temps, mais elle suit avec retard les changements de saison : la couverture du mélange réparé tombe à 0,78 en
-novembre sur le portefeuille.
+temps, mais elle suit avec retard les changements de saison : sur 28 jours glissants, la couverture du mélange
+réparé tombe à 0,75 fin novembre sur le portefeuille (0,78 en moyenne sur le mois).
 
 ### Décision de routage
 
