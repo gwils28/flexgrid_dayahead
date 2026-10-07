@@ -118,3 +118,14 @@ d'écart réel (token ENTSO-E ou compte RTE).
 - Le pipeline Dagster produit une nomination J-1 de bout en bout en local, servie par l'API.
 - Chaque figure du rapport est produite par du code du dépôt à partir de résultats versionnés.
 - `uv run pytest` vert, `uv run ruff check` propre, CI sur chaque push.
+
+## État des critères de réussite (en fin de projet)
+
+| Critère | État |
+|---|---|
+| Même tableau sur deux exécutions | Tenu : `flexgrid tables` réécrit des `results/*.csv` identiques à l'octet près (la commande s'appelle `tables`, pas `backtest` : le backtest produit les prévisions, `score` et `tables` les notent) |
+| Une phrase avec IC sur RTE, deux alignements, RTE débiaisée | Tenu ([02_backtest](02_backtest/README.md)) : le mélange bat RTE publiée sous les deux lectures ; contre RTE débiaisée, pas de différence sous la lecture pré-enregistrée, défaite sous l'autre |
+| Coût d'écart annuel par modèle et écart évité avec IC | Tenu ([04_cout](04_cout/README.md)), contre trois baselines simples |
+| Nomination J-1 de bout en bout en local, servie par l'API | Tenu sur trois jours (46, 48 et 50 pas) ([05_production](05_production/README.md)) |
+| Chaque figure produite par le code du dépôt à partir de résultats versionnés | Partiellement : verdicts, coûts, router, cold-start et dérive du concept partent de `results/`. Les figures du bloc A, la dérive des données, les profils par heure, les éventails et le coût par heure lisent les données ou les prévisions brutes (non versionnées) : elles se refont après `make data` et le backtest |
+| `pytest` vert, `ruff` propre, CI | Tenu |
