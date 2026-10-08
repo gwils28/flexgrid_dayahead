@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>D-E · Production et monitoring – FlexGrid · nomination J-1</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0ae969d3293726db143f6e9eb89af930.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a281386074b47efc8bec99f94613e88c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e4dc5147feb9df705dffda8cb410f976.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-a281386074b47efc8bec99f94613e88c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">FlexGrid · nomination J-1</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Recherche"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Basculer la navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Vue d’ensemble</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./01_donnees.html"> 
+<span class="menu-text">A · Données</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./02_backtest.html"> 
+<span class="menu-text">B-C · Backtest</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./03_router.html"> 
+<span class="menu-text">Router &amp; cold-start</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./04_cout.html"> 
+<span class="menu-text">€ · Coût d’écart</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./05_production.html" aria-current="page"> 
+<span class="menu-text">D-E · Production</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/gwils28/flexgrid_dayahead"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Basculer le mode sombre"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Sur cette page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#d.-le-service" id="toc-d.-le-service" class="nav-link active" data-scroll-target="#d.-le-service">D. Le service</a></li>
+  <li><a href="#e.-la-surveillance-rejouée-sur-lannée-de-test" id="toc-e.-la-surveillance-rejouée-sur-lannée-de-test" class="nav-link" data-scroll-target="#e.-la-surveillance-rejouée-sur-lannée-de-test">E. La surveillance, rejouée sur l’année de test</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">D-E · Production et monitoring</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Le brief demande une orchestration J-1, un registre de modèles, un service batch et une API de quantiles, des conteneurs, un secret pour le token ENTSO-E (bloc D), puis une stratégie de monitoring (bloc E). Tout tourne ici en local. Le monitoring est <strong>rejoué</strong> sur l’année de test : il n’y a pas eu de vraie mise en service, et on le dit.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/architecture.png" class="img-fluid figure-img"></p>
+<figcaption>Architecture</figcaption>
+</figure>
+</div>
+<section id="d.-le-service" class="level2">
+<h2 class="anchored" data-anchor-id="d.-le-service">D. Le service</h2>
+<section id="ce-qui-tourne" class="level3">
+<h3 class="anchored" data-anchor-id="ce-qui-tourne">Ce qui tourne</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Brique</th>
+<th>Rôle</th>
+<th>Fichier</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dagster</td>
+<td>une partition = un jour de livraison J ; planning à 09:00 heure de Paris la veille</td>
+<td><code>src/flexgrid/prod/dagster_defs.py</code></td>
+</tr>
+<tr class="even">
+<td>MLflow</td>
+<td>registre : LightGBM quantile (7 boosters) emballé en modèle <code>pyfunc</code>, alias <code>champion</code></td>
+<td><code>src/flexgrid/prod/registry.py</code></td>
+</tr>
+<tr class="odd">
+<td>Service</td>
+<td>réapprentissage, prévisions LightGBM + Chronos-2, mélange, nomination</td>
+<td><code>src/flexgrid/prod/service.py</code></td>
+</tr>
+<tr class="even">
+<td>FastAPI</td>
+<td><code>/health</code>, <code>/forecast/{famille}/{jour}</code> (quantiles), <code>/nomination/{famille}/{jour}</code> (MWh)</td>
+<td><code>src/flexgrid/prod/api.py</code></td>
+</tr>
+<tr class="odd">
+<td>Docker</td>
+<td>une image, trois services (API, Dagster, MLflow) ; données et registre montés en volume</td>
+<td><code>Dockerfile</code>, <code>docker-compose.yml</code></td>
+</tr>
+</tbody>
+</table>
+<p>La configuration est dans <code>configs/prod.yaml</code> : modèle nommé <code>ensemble</code> (le meilleur du backtest sur le portefeuille), repli <code>lgbm</code> si Chronos-2 échoue ou dépasse 300 s (GPU absent, par exemple). Le repli est une fonction du service : la raison est écrite à côté de la prévision (<code>&lt;jour&gt;.status.json</code>), et la nomination dit quel modèle a été nommé.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync <span class="at">--extra</span> prod</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">DAGSTER_HOME</span><span class="op">=</span><span class="va">$PWD</span>/dagster_home <span class="ex">uv</span> run dagster asset materialize <span class="at">-m</span> flexgrid.prod.dagster_defs <span class="at">--select</span> <span class="st">'*'</span> <span class="at">--partition</span> 2026-03-29</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run uvicorn flexgrid.prod.api:app <span class="at">--port</span> 8000</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> localhost:8000/nomination/segments/2026-03-29</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="ce-qui-a-été-vérifié" class="level3">
+<h3 class="anchored" data-anchor-id="ce-qui-a-été-vérifié">Ce qui a été vérifié</h3>
+<p>Trois partitions ont été matérialisées de bout en bout (journaux dans <code>logs/prod_&lt;jour&gt;.log</code>, non versionnés) :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Jour de livraison</th>
+<th>Pas attendus</th>
+<th>Nomination national</th>
+<th>Nomination portefeuille</th>
+<th>Réapprentissage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>26 octobre 2025 (heure d’hiver)</td>
+<td>50</td>
+<td>50 pas</td>
+<td>50 pas</td>
+<td>oui (pas de champion valide)</td>
+</tr>
+<tr class="even">
+<td>29 mars 2026 (heure d’été)</td>
+<td>46</td>
+<td>46 pas</td>
+<td>46 pas</td>
+<td>oui</td>
+</tr>
+<tr class="odd">
+<td>30 juin 2026 (mardi)</td>
+<td>48</td>
+<td>48 pas</td>
+<td>48 pas</td>
+<td>oui (réapprentissage hebdomadaire)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Le contrôle d’actif Dagster (quantiles ordonnés, nombre de pas du jour local) passe sur les trois.</li>
+<li><strong>La production reproduit le backtest.</strong> Chronos-2 donne exactement les mêmes quantiles (écart 0,00 %). Pour LightGBM, le 30 juin, où le service et le backtest réapprennent à la même date, l’écart est aussi de 0,00 %. Les autres jours, l’écart moyen de la médiane est de 0,4 à 1,9 %. Il vient de la date de réapprentissage : le service, rejoué sur un jour isolé, réapprend ce jour-là, alors que le backtest garde le modèle du mardi.</li>
+<li>L’API sert les quantiles et la nomination, et renvoie 404 pour un jour non prévu. Un test (<code>tests/test_api.py</code>) le vérifie sur une journée de 50 pas.</li>
+</ul>
+</section>
+<section id="un-bug-trouvé-en-rejouant-le-passé" class="level3">
+<h3 class="anchored" data-anchor-id="un-bug-trouvé-en-rejouant-le-passé">Un bug trouvé en rejouant le passé</h3>
+<p>La première exécution, sur le 26 octobre 2025, a utilisé pour le national le champion du registre, appris pour le 30 juin 2026 : <strong>un modèle qui avait vu huit mois de données postérieures à l’émission</strong>. En service réel, cela n’arrive pas : on avance dans le temps. Mais c’est exactement ce que fait un <em>backfill</em>. Règle ajoutée (<code>dagster_defs.needs_refit</code>, testée) : un champion n’est réutilisé que s’il a été appris pour un jour de la semaine qui précède, jamais après.</p>
+</section>
+<section id="le-token-entso-e" class="level3">
+<h3 class="anchored" data-anchor-id="le-token-entso-e">Le token ENTSO-E</h3>
+<p>Le client ENTSO-E (<code>src/flexgrid/sources/entsoe.py</code>) lit le token dans <code>ENTSOE_TOKEN</code> ou dans le fichier désigné par <code>ENTSOE_TOKEN_FILE</code>, monté par Docker comme secret (<code>.secrets/entsoe_token</code>, ignoré par git). Il n’apparaît ni dans le code, ni dans la configuration, ni dans l’image. Faute de token, le service tourne sur éCO2mix et Energy-Charts. Le client est testé sur une réponse XML enregistrée.</p>
+</section>
+<section id="ce-qui-manque-pour-une-vraie-production" class="level3">
+<h3 class="anchored" data-anchor-id="ce-qui-manque-pour-une-vraie-production">Ce qui manque pour une vraie production</h3>
+<ul>
+<li><strong>L’ingestion temps réel.</strong> Le service lit les snapshots figés de <code>data/raw/</code>. Brancher les API (éCO2mix, Enedis, Open-Meteo) demande une tâche d’ingestion par source, avec les mêmes contrôles qu’au bloc A. Les courbes de charge des sites, elles, viennent du gestionnaire de réseau par un canal contractuel, pas d’une API publique.</li>
+<li><strong>Un magasin de variables.</strong> Les variables sont recalculées à chaque prévision (quelques secondes) : à cette échelle, un <em>feature store</em> n’apporterait rien de mesurable.</li>
+<li><strong>L’envoi de la nomination</strong> au marché ou au gestionnaire d’équilibre : le service s’arrête au fichier.</li>
+<li><strong>Une image plus légère.</strong> L’image construite (<code>docker build -t flexgrid-dayahead:local .</code>) sert l’API en conteneur, vérifié sur <code>/health</code> et <code>/nomination</code>. Elle pèse 6,9 Go compressés (20,8 Go sur disque), presque tout pour torch et CUDA. L’API seule n’a besoin ni de torch ni de LightGBM : une image séparée pour l’API la ramènerait à quelques centaines de Mo.</li>
+<li><strong>Chronos-2 dans le conteneur</strong> a besoin d’un GPU (<code>deploy.resources</code> de Compose) ; sans GPU, le repli LightGBM prend le relais, ce qui coûte 3 % de MAE sur le portefeuille d’après le backtest (2,64 MW contre 2,57).</li>
+</ul>
+</section>
+</section>
+<section id="e.-la-surveillance-rejouée-sur-lannée-de-test" class="level2">
+<h2 class="anchored" data-anchor-id="e.-la-surveillance-rejouée-sur-lannée-de-test">E. La surveillance, rejouée sur l’année de test</h2>
+<p>Nombres : <code>results/monitoring_summary.json</code>, <code>results/monitoring_data_drift.csv</code>, <code>results/monitoring_monthly_kpi.csv</code>. Figures : <code>uv run python -m flexgrid.figures_monitoring</code>.</p>
+<section id="dérive-des-données" class="level3">
+<h3 class="anchored" data-anchor-id="dérive-des-données">Dérive des données</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/data_drift.png" class="img-fluid figure-img"></p>
+<figcaption>Dérive des données</figcaption>
+</figure>
+</div>
+<p>Chaque mois de l’année de test est comparé au même mois de l’année précédente (PSI et KS). La référence est saisonnière, sinon tout mois d’hiver « dériverait » par rapport à l’été. Seuil usuel : PSI &gt; 0,25. - <strong>Le prix dérive la plupart des mois</strong> (7 mois sur 12, PSI max 3,47 en février 2026). Ce n’est pas une alerte utile : le prix change de régime d’une année à l’autre. Il ne sert qu’à valoriser l’erreur, pas à prévoir. - <strong>Février 2026 dérive sur toutes les variables</strong> : température (PSI 1,32), consommation nationale (0,66), portefeuille (0,37). Février 2026 a été 3 °C plus doux que février 2025 (9,2 °C contre 6,3 °C en moyenne nationale observée). Une dérive des entrées n’est pas une panne : les modèles l’ont absorbée, la figure suivante le montre.</p>
+</section>
+<section id="dérive-du-concept-le-modèle-garde-t-il-son-niveau" class="level3">
+<h3 class="anchored" data-anchor-id="dérive-du-concept-le-modèle-garde-t-il-son-niveau">Dérive du concept : le modèle garde-t-il son niveau ?</h3>
+<p>Le brief demande « MASE/CRPS glissant vs baseline RTE ; alerte si dégradation persistante ». Le ratio suivi est le MAE sur 28 jours du modèle divisé par celui de la référence. Une alerte sonne après 14 jours consécutifs au-dessus du seuil.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/national_concept_drift.png" class="img-fluid figure-img"></p>
+<figcaption>Dérive du concept, national</figcaption>
+</figure>
+</div>
+<p><strong>Le seuil naïf (« le modèle fait moins bien que la référence ») est inutilisable au national.</strong> Il sonne 208 jours sur 365 pour le mélange et 215 pour LightGBM : on sait depuis le backtest que le modèle est moins bon que RTE débiaisée hors de l’été. Une alerte qui sonne la moitié de l’année n’est plus lue. Le seuil retenu est <strong>auto-référencé</strong> : 1,15 fois le ratio du modèle sur la fenêtre de validation. Il sonne 52 jours pour le mélange (mi-janvier, avril-mai et juin) et 12 pour LightGBM.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/portfolio_concept_drift.png" class="img-fluid figure-img"></p>
+<figcaption>Dérive du concept, portefeuille</figcaption>
+</figure>
+</div>
+<p>Sur le portefeuille, contre RTE au prorata, aucune alerte au seuil naïf : le modèle garde son avance toute l’année. Le seuil auto-référencé sonne 5 jours pour le mélange (février) et 26 pour LightGBM (août et février), quand le ratio remonte vers 0,75-0,85.</p>
+</section>
+<section id="calibration" class="level3">
+<h3 class="anchored" data-anchor-id="calibration">Calibration</h3>
+<p>Le panneau du bas de chaque figure suit la couverture de l’intervalle 90 % sur 28 jours, la question du brief : « un 90 % qui dérive à 70 % = perte d’argent ». C’est arrivé : la couverture brute de LightGBM descend à 0,52 sur le portefeuille en janvier, et sous 0,65 au national. La réparation conforme la ramène dans la bande la plupart du temps, mais elle suit avec retard les changements de saison : sur 28 jours glissants, la couverture du mélange réparé tombe à 0,75 fin novembre sur le portefeuille (0,78 en moyenne sur le mois).</p>
+</section>
+<section id="décision-de-routage" class="level3">
+<h3 class="anchored" data-anchor-id="décision-de-routage">Décision de routage</h3>
+<p>Suivie au bloc 03 (dérive des routes) : le stump bascule entre 0 et 50 segments selon la saison, 4,3 segments par semaine en moyenne. Le service nomme le mélange, qui n’a pas de décision à surveiller.</p>
+</section>
+<section id="le-kpi-de-tête-le-coût-décart-mensuel" class="level3">
+<h3 class="anchored" data-anchor-id="le-kpi-de-tête-le-coût-décart-mensuel">Le KPI de tête : le coût d’écart mensuel</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mois</th>
+<th>MAPE</th>
+<th>Écart (MWh)</th>
+<th>Coût k = 1</th>
+<th>Coût k = 0,25</th>
+<th>Couverture 90 % réparée</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>juil. 2025</td>
+<td>2,9 %</td>
+<td>1 822</td>
+<td>94 k€</td>
+<td>24 k€</td>
+<td>0,89</td>
+</tr>
+<tr class="even">
+<td>août 2025</td>
+<td>1,9 %</td>
+<td>1 232</td>
+<td>67 k€</td>
+<td>17 k€</td>
+<td>0,98</td>
+</tr>
+<tr class="odd">
+<td>sept. 2025</td>
+<td>1,9 %</td>
+<td>1 207</td>
+<td>42 k€</td>
+<td>10 k€</td>
+<td>0,90</td>
+</tr>
+<tr class="even">
+<td>oct. 2025</td>
+<td>1,9 %</td>
+<td>1 227</td>
+<td>69 k€</td>
+<td>17 k€</td>
+<td>0,88</td>
+</tr>
+<tr class="odd">
+<td>nov. 2025</td>
+<td>3,4 %</td>
+<td>2 433</td>
+<td>159 k€</td>
+<td>40 k€</td>
+<td>0,78</td>
+</tr>
+<tr class="even">
+<td>déc. 2025</td>
+<td>3,5 %</td>
+<td>2 749</td>
+<td>193 k€</td>
+<td>48 k€</td>
+<td>0,89</td>
+</tr>
+<tr class="odd">
+<td>janv. 2026</td>
+<td>3,5 %</td>
+<td>2 898</td>
+<td>293 k€</td>
+<td>73 k€</td>
+<td>0,93</td>
+</tr>
+<tr class="even">
+<td>févr. 2026</td>
+<td>2,6 %</td>
+<td>1 650</td>
+<td>73 k€</td>
+<td>18 k€</td>
+<td>0,99</td>
+</tr>
+<tr class="odd">
+<td>mars 2026</td>
+<td>2,5 %</td>
+<td>1 716</td>
+<td>108 k€</td>
+<td>27 k€</td>
+<td>0,93</td>
+</tr>
+<tr class="even">
+<td>avr. 2026</td>
+<td>3,1 %</td>
+<td>1 854</td>
+<td>86 k€</td>
+<td>21 k€</td>
+<td>0,89</td>
+</tr>
+<tr class="odd">
+<td>mai 2026</td>
+<td>3,1 %</td>
+<td>2 005</td>
+<td>92 k€</td>
+<td>23 k€</td>
+<td>0,89</td>
+</tr>
+<tr class="even">
+<td>juin 2026</td>
+<td>2,5 %</td>
+<td>1 723</td>
+<td>108 k€</td>
+<td>27 k€</td>
+<td>0,93</td>
+</tr>
+</tbody>
+</table>
+<p>Mélange, portefeuille FlexGrid. C’est le tableau qu’un responsable d’équilibre regarderait chaque mois. Il dit aussi la limite de ce chiffre : janvier coûte sept fois septembre pour une énergie en écart 2,4 fois plus grande, parce que le prix et l’erreur montent ensemble en hiver.</p>
+</section>
+<section id="ce-que-le-rejeu-ne-montre-pas" class="level3">
+<h3 class="anchored" data-anchor-id="ce-que-le-rejeu-ne-montre-pas">Ce que le rejeu ne montre pas</h3>
+<p>Le monitoring rejoué connaît déjà toute l’année. Les seuils ont été fixés après avoir vu la saturation du seuil naïf : c’est une décision prise sur les données de test, déclarée dans les notes d’implémentation. Un vrai monitoring les fixerait sur la validation et les garderait un an.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
