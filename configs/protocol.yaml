@@ -59,6 +59,34 @@ models:
   chronos2: {checkpoint: amazon/chronos-2, context_steps: 2048, covariates: false}
   chronos2_cov: {checkpoint: amazon/chronos-2, context_steps: 2048, covariates: true}
   ensemble: {members: [lgbm, chronos2_cov], rule: quantile_average}
+  # ADDENDUM (2026-10-16) : Timestral (Mistral AI, sorti le 2026-10-15) et TimesFM 3.0 (Google Research,
+  # 2026-08-31). Écrit avant toute prévision de ces modèles, mais après avoir vu les résultats de tous les autres :
+  # c'est un ajout déclaré (IMPLEMENTATION_NOTES), pas une partie du protocole d'origine. Rien au-dessus ne change.
+  # Entrées identiques à Chronos-2 (chronos.make_input). covariates : none | weather (temp., nébulosité,
+  # rayonnement) | full (météo + férié, pont, vacances scolaires, week-end). L'écart full / weather mesure le
+  # calendrier. Réglages publiés par défaut ; aucun réglage choisi sur le test.
+  chronos2_wx: {family: chronos2, checkpoint: amazon/chronos-2, context_steps: 2048, covariates: weather}
+  timestral: {family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 2048, covariates: none}
+  timestral_wx: {family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 2048, covariates: weather}
+  timestral_cov: {family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 2048, covariates: full}
+  # 5M : le plus petit, sur CPU, pour savoir si un TSFM peut tourner en production sans GPU.
+  timestral5m: {family: timestral, checkpoint: mistralai/Timestral-5M, context_steps: 2048, covariates: none, device: cpu}
+  timestral5m_wx: {family: timestral, checkpoint: mistralai/Timestral-5M, context_steps: 2048, covariates: weather, device: cpu}
+  timestral5m_cov: {family: timestral, checkpoint: mistralai/Timestral-5M, context_steps: 2048, covariates: full, device: cpu}
+  # TimesFM 3.0 émet 9 quantiles (0,1-0,9) : q0,25/q0,75 interpolés, q0,05/q0,95 extrapolés (queues gaussiennes).
+  timesfm3: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 2048, covariates: none}
+  timesfm3_wx: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 2048, covariates: weather}
+  timesfm3_cov: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 2048, covariates: full}
+  # Contexte long : chaque TSFM à son maximum (Chronos-2 8 192 pas, TimesFM 15 360, Timestral 32 768 = 1,9 an,
+  # qui contient la même saison de l'année précédente). Mesure ce que 2 048 pas (42,7 jours) laissent de côté.
+  chronos2_cov_long: {family: chronos2, checkpoint: amazon/chronos-2, context_steps: 8192, covariates: full}
+  timesfm3_cov_long: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 15360, covariates: full}
+  timestral_cov_long: {family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 32768, covariates: full}
+  # Mélanges ajoutés (exploratoires : leur composition s'inspire du succès connu de `ensemble`).
+  ens_lgbm_timestral: {members: [lgbm, timestral_cov], rule: quantile_average}
+  ens_lgbm_timesfm3: {members: [lgbm, timesfm3_cov], rule: quantile_average}
+  ens_lgbm_tsfm3: {members: [lgbm, chronos2_cov, timestral_cov, timesfm3_cov], weights: [0.5, 0.1667, 0.1667, 0.1666], rule: quantile_average}
+  ens_all4: {members: [lgbm, chronos2_cov, timestral_cov, timesfm3_cov], rule: quantile_average}
   # Benchmarks (national seulement).
   rte_j1: {alignment: same}
   rte_j1_debiased: {alignment: same, window_days: 28}
@@ -107,6 +135,10 @@ router:
     - naive_noise          # MAE de la naïve hebdomadaire / moyenne
     - temp_sensitivity     # pente conso / température journalière (MW/°C), en valeur absolue relative
   policies: [always_lgbm, always_chronos2_cov, ensemble, learned_stump, oracle]
+  # ADDENDUM (2026-10-16) : router à quatre branches. Le stump coupe les segments en deux groupes et donne à
+  # chacun la branche au MASE total le plus bas sur la validation. Le router d'origine est recalculé à l'identique.
+  branches4: [lgbm, chronos2_cov, timestral_cov, timesfm3_cov]
+  policies4: [always_timestral_cov, always_timesfm3_cov, learned_stump4, oracle4, ens_lgbm_tsfm3, ens_all4]
   # Le stump est appris sur la fenêtre de validation, appliqué tel quel sur l'année de test.
   drift: {trailing_days: 28}
 
@@ -114,7 +146,25 @@ cold_start:
   # Historique tronqué à chaque origine, pour les segments du panel.
   history_days: [7, 14, 28, 56]
   models: [snaive_week, lgbm, chronos2, chronos2_cov, chronos2_fewshot]
+  # ADDENDUM (2026-10-16). Few-shot Timestral : les frères (même tranche et profil, autres régions) entrent comme
+  # covariables passées, avec 2 048 pas ; la cible tronquée est complétée à gauche par des valeurs manquantes,
+  # ce que Timestral accepte. TimesFM 3.0 exige des covariables de la longueur de la cible : pas de few-shot.
+  models_addendum: [timestral, timestral_cov, timestral5m_cov, timesfm3, timesfm3_cov, timestral_fewshot]
   # few-shot in-context : Chronos-2 en cross_learning, le lot contient le segment tronqué et les segments de
   # même tranche et profil des autres régions, avec leur historique complet, coupés au même instant.
 
 seed: 18
+
+# ADDENDUM (2026-10-16) : quelles questions l'ajout des deux TSFM doit trancher, et comment.
+addendum_2026_10_16:
+  # 1. Un nouveau TSFM bat-il Chronos-2 + covariables ? Ratio de MAE (IC 95 %, blocs de 7 jours) sur le national
+  #    et le portefeuille, même règle que le verdict contre RTE.
+  # 2. Le calendrier aide-t-il ? Ratio de MAE full / weather pour chaque TSFM, sur tous les jours, les fériés et
+  #    les ponts de l'année de test. Moins de 20 jours fériés ou ponts : l'IC sera large, on le sait d'avance.
+  # 3. Le service change-t-il de modèle ? Seulement si un mélange de l'addendum a un MAE plus bas que `ensemble`
+  #    sur le portefeuille pendant la VALIDATION (janvier-juin 2025) ; l'année de test confirme ou infirme.
+  holiday_day_types: [holiday, bridge]
+  production_switch_window: validation
+  # Licence : poids de TimesFM 3.0 non commerciaux ; projet personnel de veille, sans usage commercial (choix de
+  # l'auteur). Poids Timestral sous MIT modifiée.
+
