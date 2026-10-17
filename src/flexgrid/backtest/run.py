@@ -72,6 +72,20 @@ def run(protocol: dict, family: str, model: str, log=print) -> pd.DataFrame:
             name=model,
             origins_per_call=1 if spec["covariates"] else 8,
         )
+    elif "family" in m.get(model, {}):  # addendum du 2026-10-16 : Timestral, TimesFM 3.0, variantes de Chronos-2
+        from flexgrid.models import tsfm
+
+        school = pd.read_parquet(RAW / "calendrier_scolaire.parquet")
+        fc = tsfm.backtest(
+            y,
+            origins,
+            m[model],
+            dataset.load("weather_observed"),
+            dataset.load("weather_forecast"),
+            school,
+            name=model,
+            log=lambda s: log(f"{s} ({time.time() - t0:.0f} s)"),
+        )
     else:
         raise ValueError(model)
     for name, g in fc.groupby("model"):
