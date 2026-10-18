@@ -76,6 +76,8 @@ def run(protocol: dict, family: str, model: str, log=print) -> pd.DataFrame:
         from flexgrid.models import tsfm
 
         school = pd.read_parquet(RAW / "calendrier_scolaire.parquet")
+        if family == "segments" and "segments_units" in m[model]:
+            y = y[y.unique_id.isin(m[model]["segments_units"])]
         fc = tsfm.backtest(
             y,
             origins,

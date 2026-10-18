@@ -29,6 +29,44 @@ def ensemble(a: pd.DataFrame, b: pd.DataFrame, name: str = "ensemble") -> pd.Dat
     return out.assign(model=name)
 
 
+def blend(members: list[pd.DataFrame], weights: list[float] | None, name: str) -> pd.DataFrame:
+    """Moyenne pondérée des quantiles de N modèles (moyenne de Vincent), sur les pas communs à tous."""
+    keys = ["unique_id", "day", "ds"]
+    w = weights or [1 / len(members)] * len(members)
+    out = members[0][[*keys, "h"]]
+    for d in members[1:]:
+        out = out.merge(d[keys], on=keys)
+    acc = {c: 0.0 for c in I.QCOLS}
+    for d, wi in zip(members, w, strict=True):
+        aligned = out[keys].merge(d, on=keys, how="left")
+        for c in I.QCOLS:
+            acc[c] = acc[c] + wi * aligned[c].to_numpy()
+    out = out.reset_index(drop=True)
+    for c in I.QCOLS:
+        out[c] = acc[c]
+    return out.assign(model=name)
+
+
+# Modèles réparés par la méthode conforme : les références et les candidats à la nomination.
+CONFORMAL = [
+    "lgbm",
+    "chronos2_cov",
+    "ensemble",
+    "rte_j1_debiased",
+    "rte_prorata",
+    "mstl",
+    "timestral_cov",
+    "timestral5m_cov",
+    "timesfm3_cov",
+    "ens_lgbm_timestral",
+    "ens_lgbm_timesfm3",
+    "ens_lgbm_tsfm3",
+    "ens_all4",
+    "ens_lgbm_timestral_long",
+    "timestral_cov_long",
+]
+
+
 def add_derived(fcs: dict[str, pd.DataFrame], family: str, protocol: dict) -> dict[str, pd.DataFrame]:
     actuals = I.series(family)
     origins = all_origins(protocol, family)
@@ -45,10 +83,12 @@ def add_derived(fcs: dict[str, pd.DataFrame], family: str, protocol: dict) -> di
         fcs["rte_prorata"] = rte.prorata(nat, port, origins)
     if "lgbm" in fcs and "chronos2_cov" in fcs:
         fcs["ensemble"] = ensemble(fcs["lgbm"], fcs["chronos2_cov"])
+    # Mélanges de l'addendum du 2026-10-16, lus dans le protocole.
+    for name, spec in protocol["models"].items():
+        if name != "ensemble" and "members" in spec and all(m in fcs for m in spec["members"]):
+            fcs[name] = blend([fcs[m] for m in spec["members"]], spec.get("weights"), name)
     n_cal = protocol["conformal"]["calibration_days"]
-    for name in [
-        n for n in list(fcs) if n in ("lgbm", "chronos2_cov", "ensemble", "rte_j1_debiased", "rte_prorata", "mstl")
-    ]:
+    for name in [n for n in list(fcs) if n in CONFORMAL]:
         # Segments : seul le portefeuille est réparé (le panel sert au router, qui ne lit que la médiane).
         groups = [
             (u, g) for u, g in fcs[name].groupby("unique_id") if family == "national" or u == dataset.PORTFOLIO_ID

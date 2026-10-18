@@ -56,3 +56,26 @@ def test_psi_is_zero_on_identical_samples_and_large_on_a_shift():
     assert psi(a, a + 1) > 0.25
     r = pd.Series([0.9] * 5 + [1.1] * 20)
     assert alerts(r, persist=14).sum() == 7
+
+
+def test_blend_of_two_is_the_ensemble():
+    import numpy as np
+
+    from flexgrid.backtest import inputs as I
+    from flexgrid.backtest import score as S
+
+    def member(seed):
+        d = pd.DataFrame(
+            {
+                "unique_id": "A",
+                "day": pd.Timestamp("2025-01-01"),
+                "ds": pd.date_range("2025-01-01", periods=5, freq="30min", tz="UTC"),
+                "h": range(5),
+            }
+        )
+        for c in I.QCOLS:
+            d[c] = np.random.default_rng(seed).normal(size=5)
+        return d
+
+    a, b = member(1), member(2)
+    np.testing.assert_allclose(S.ensemble(a, b)[I.QCOLS].to_numpy(), S.blend([a, b], None, "x")[I.QCOLS].to_numpy())

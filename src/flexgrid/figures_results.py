@@ -13,8 +13,7 @@ from flexgrid import inference
 from flexgrid import plots as P
 from flexgrid.backtest.inputs import qcol
 from flexgrid.backtest.origins import TZ
-from flexgrid.data import calendar as C
-from flexgrid.paths import RAW, ROOT
+from flexgrid.paths import ROOT
 
 OUT = ROOT / "02_backtest" / "figures"
 MAIN = ["lgbm", "chronos2_cov", "ensemble", "chronos2", "mstl", "snaive_week"]
@@ -106,16 +105,13 @@ def calibration(po: pd.DataFrame, uid: str, models: list[str], path: Path, title
 
 def day_types(po: pd.DataFrame, uid: str, models: list[str], ref: str, path: Path, title: str) -> Path:
     t = _test(po, uid)
-    school = pd.read_parquet(RAW / "calendrier_scolaire.parquet")
-    days = pd.DatetimeIndex(sorted(t.day.unique()))
-    cal = C.features((days + pd.Timedelta(hours=12)).tz_localize(TZ).tz_convert("UTC"), school)
-    names = {0: "lundi", 1: "mar-ven", 5: "samedi", 6: "dimanche", 7: "férié", 8: "pont"}
-    kind = np.where(cal.holiday == 1, 7, np.where(cal.bridge == 1, 8, cal.dow.clip(upper=6)))
-    kind = np.where(np.isin(kind, [1, 2, 3, 4]), 1, kind)
-    lab = pd.Series([names[k] for k in kind], index=days)
+    from flexgrid.analysis import day_kinds
+
+    lab = day_kinds(pd.DatetimeIndex(sorted(t.day.unique())))
+    names = ["lundi", "mar-ven", "samedi", "dimanche", "férié", "pont"]
     p = t.pivot_table(index="day", columns="model", values="mae")
     p["type"] = lab.reindex(p.index).to_numpy()
-    order = [n for n in names.values() if n in set(lab)]
+    order = [n for n in names if n in set(lab)]
     fig, ax = plt.subplots(figsize=(10, 4))
     w = 0.8 / len(models)
     for j, m in enumerate(models):

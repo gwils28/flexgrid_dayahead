@@ -7,27 +7,71 @@
 5,rte_j1,snaive_day,2.44919,2.23801,2.63521,0.88074,PERD,PERD
 6,rte_j1,snaive_week,2.45143,1.94974,3.02394,0.84718,PERD,PERD
 7,rte_j1,ets_seasonal,2.49383,2.27761,2.68524,0.70018,PERD,PERD
-8,rte_j1_prev,ensemble,0.68489,0.59758,0.77839,0.85648,GAGNE,GAGNE
-9,rte_j1_prev,lgbm,0.7418,0.64538,0.84083,0.75841,GAGNE EN POINT SEULEMENT,GAGNE
-10,rte_j1_prev,chronos2_cov,0.84624,0.73795,0.96019,0.82588,GAGNE EN POINT SEULEMENT,GAGNE
-11,rte_j1_prev,chronos2,1.33745,1.1449,1.52992,0.81115,PERD,PERD
-12,rte_j1_prev,mstl,1.74377,1.49944,2.01818,0.78615,PERD,PERD
-13,rte_j1_prev,snaive_day,2.61845,2.37435,2.8342,0.88074,PERD,PERD
-14,rte_j1_prev,snaive_week,2.62085,2.08291,3.24032,0.84718,PERD,PERD
-15,rte_j1_prev,ets_seasonal,2.66618,2.41555,2.88939,0.70018,PERD,PERD
-16,rte_j1_debiased,ensemble,1.10003,0.9899,1.21707,0.85648,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
-17,rte_j1_debiased,lgbm,1.19143,1.07639,1.31043,0.75841,PERD,PERD
-18,rte_j1_debiased,chronos2_cov,1.35917,1.20952,1.5239,0.82588,PERD,PERD
-19,rte_j1_debiased,chronos2,2.14811,1.89987,2.40862,0.81115,PERD,PERD
-20,rte_j1_debiased,mstl,2.80072,2.4793,3.19384,0.78615,PERD,PERD
-21,rte_j1_debiased,snaive_day,4.20556,3.85907,4.54209,0.88074,PERD,PERD
-22,rte_j1_debiased,snaive_week,4.20942,3.44885,5.01823,0.84718,PERD,PERD
-23,rte_j1_debiased,ets_seasonal,4.28223,3.90526,4.63426,0.70018,PERD,PERD
-24,rte_j1_debiased_prev,ensemble,1.13764,1.02297,1.26358,0.85648,PERD,PERD
-25,rte_j1_debiased_prev,lgbm,1.23217,1.11287,1.35836,0.75841,PERD,PERD
-26,rte_j1_debiased_prev,chronos2_cov,1.40564,1.25023,1.58071,0.82588,PERD,PERD
-27,rte_j1_debiased_prev,chronos2,2.22155,1.96424,2.49995,0.81115,PERD,PERD
-28,rte_j1_debiased_prev,mstl,2.89647,2.57158,3.30814,0.78615,PERD,PERD
-29,rte_j1_debiased_prev,snaive_day,4.34935,3.98075,4.71344,0.88074,PERD,PERD
-30,rte_j1_debiased_prev,snaive_week,4.35334,3.56255,5.19709,0.84718,PERD,PERD
-31,rte_j1_debiased_prev,ets_seasonal,4.42863,4.02981,4.81904,0.70018,PERD,PERD
+8,rte_j1,timestral_cov,0.93664,0.81484,1.07941,0.95821,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+9,rte_j1,timesfm3_cov,0.94492,0.8214,1.0849,0.88634,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+10,rte_j1,timestral5m_cov,1.29197,1.16142,1.43662,0.87441,PERD,PERD
+11,rte_j1,timestral_cov_long,0.70691,0.60981,0.81796,0.94765,GAGNE,GAGNE
+12,rte_j1,timesfm3_cov_long,0.82667,0.73218,0.93722,0.88771,GAGNE,GAGNE
+13,rte_j1,chronos2_cov_long,0.81808,0.72778,0.92361,0.84855,GAGNE EN POINT SEULEMENT,GAGNE EN POINT SEULEMENT
+14,rte_j1,ens_lgbm_timestral,0.69887,0.61228,0.79516,0.94674,GAGNE,GAGNE
+15,rte_j1,ens_lgbm_timesfm3,0.70988,0.6171,0.8121,0.88834,GAGNE,GAGNE
+16,rte_j1,ens_lgbm_tsfm3,0.65383,0.57055,0.74372,0.92179,GAGNE,GAGNE
+17,rte_j1,ens_all4,0.70997,0.61808,0.81372,0.93886,GAGNE,GAGNE
+18,rte_j1,ens_lgbm_timestral_long,0.59398,0.52111,0.68136,0.93589,GAGNE,GAGNE
+19,rte_j1_prev,ensemble,0.68489,0.59758,0.77839,0.85648,GAGNE,GAGNE
+20,rte_j1_prev,lgbm,0.7418,0.64538,0.84083,0.75841,GAGNE EN POINT SEULEMENT,GAGNE
+21,rte_j1_prev,chronos2_cov,0.84624,0.73795,0.96019,0.82588,GAGNE EN POINT SEULEMENT,GAGNE
+22,rte_j1_prev,chronos2,1.33745,1.1449,1.52992,0.81115,PERD,PERD
+23,rte_j1_prev,mstl,1.74377,1.49944,2.01818,0.78615,PERD,PERD
+24,rte_j1_prev,snaive_day,2.61845,2.37435,2.8342,0.88074,PERD,PERD
+25,rte_j1_prev,snaive_week,2.62085,2.08291,3.24032,0.84718,PERD,PERD
+26,rte_j1_prev,ets_seasonal,2.66618,2.41555,2.88939,0.70018,PERD,PERD
+27,rte_j1_prev,timestral_cov,1.00137,0.86837,1.15462,0.95821,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+28,rte_j1_prev,timesfm3_cov,1.01023,0.87351,1.16201,0.88634,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+29,rte_j1_prev,timestral5m_cov,1.38126,1.23538,1.53982,0.87441,PERD,PERD
+30,rte_j1_prev,timestral_cov_long,0.75577,0.65009,0.87826,0.94765,GAGNE,GAGNE
+31,rte_j1_prev,timesfm3_cov_long,0.88381,0.78107,1.00593,0.88771,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+32,rte_j1_prev,chronos2_cov_long,0.87461,0.77247,0.99098,0.84855,GAGNE EN POINT SEULEMENT,GAGNE EN POINT SEULEMENT
+33,rte_j1_prev,ens_lgbm_timestral,0.74716,0.65244,0.85379,0.94674,GAGNE,GAGNE
+34,rte_j1_prev,ens_lgbm_timesfm3,0.75894,0.65635,0.87247,0.88834,GAGNE,GAGNE
+35,rte_j1_prev,ens_lgbm_tsfm3,0.69901,0.60803,0.79976,0.92179,GAGNE,GAGNE
+36,rte_j1_prev,ens_all4,0.75903,0.65715,0.87444,0.93886,GAGNE,GAGNE
+37,rte_j1_prev,ens_lgbm_timestral_long,0.63503,0.55402,0.73014,0.93589,GAGNE,GAGNE
+38,rte_j1_debiased,ensemble,1.10003,0.9899,1.21707,0.85648,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+39,rte_j1_debiased,lgbm,1.19143,1.07639,1.31043,0.75841,PERD,PERD
+40,rte_j1_debiased,chronos2_cov,1.35917,1.20952,1.5239,0.82588,PERD,PERD
+41,rte_j1_debiased,chronos2,2.14811,1.89987,2.40862,0.81115,PERD,PERD
+42,rte_j1_debiased,mstl,2.80072,2.4793,3.19384,0.78615,PERD,PERD
+43,rte_j1_debiased,snaive_day,4.20556,3.85907,4.54209,0.88074,PERD,PERD
+44,rte_j1_debiased,snaive_week,4.20942,3.44885,5.01823,0.84718,PERD,PERD
+45,rte_j1_debiased,ets_seasonal,4.28223,3.90526,4.63426,0.70018,PERD,PERD
+46,rte_j1_debiased,timestral_cov,1.60833,1.42773,1.82829,0.95821,PERD,PERD
+47,rte_j1_debiased,timesfm3_cov,1.62255,1.4356,1.85093,0.88634,PERD,PERD
+48,rte_j1_debiased,timestral5m_cov,2.21848,2.01039,2.46346,0.87441,PERD,PERD
+49,rte_j1_debiased,timestral_cov_long,1.21386,1.0879,1.37755,0.94765,PERD,PERD
+50,rte_j1_debiased,timesfm3_cov_long,1.41951,1.27907,1.58886,0.88771,PERD,PERD
+51,rte_j1_debiased,chronos2_cov_long,1.40474,1.25967,1.57012,0.84855,PERD,PERD
+52,rte_j1_debiased,ens_lgbm_timestral,1.20004,1.07871,1.33569,0.94674,PERD,PERD
+53,rte_j1_debiased,ens_lgbm_timesfm3,1.21895,1.07883,1.37077,0.88834,PERD,PERD
+54,rte_j1_debiased,ens_lgbm_tsfm3,1.1227,1.00141,1.24987,0.92179,PERD,PERD
+55,rte_j1_debiased,ens_all4,1.21911,1.08189,1.37158,0.93886,PERD,PERD
+56,rte_j1_debiased,ens_lgbm_timestral_long,1.01994,0.92437,1.13302,0.93589,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE
+57,rte_j1_debiased_prev,ensemble,1.13764,1.02297,1.26358,0.85648,PERD,PERD
+58,rte_j1_debiased_prev,lgbm,1.23217,1.11287,1.35836,0.75841,PERD,PERD
+59,rte_j1_debiased_prev,chronos2_cov,1.40564,1.25023,1.58071,0.82588,PERD,PERD
+60,rte_j1_debiased_prev,chronos2,2.22155,1.96424,2.49995,0.81115,PERD,PERD
+61,rte_j1_debiased_prev,mstl,2.89647,2.57158,3.30814,0.78615,PERD,PERD
+62,rte_j1_debiased_prev,snaive_day,4.34935,3.98075,4.71344,0.88074,PERD,PERD
+63,rte_j1_debiased_prev,snaive_week,4.35334,3.56255,5.19709,0.84718,PERD,PERD
+64,rte_j1_debiased_prev,ets_seasonal,4.42863,4.02981,4.81904,0.70018,PERD,PERD
+65,rte_j1_debiased_prev,timestral_cov,1.66331,1.47579,1.90046,0.95821,PERD,PERD
+66,rte_j1_debiased_prev,timesfm3_cov,1.67803,1.47973,1.92633,0.88634,PERD,PERD
+67,rte_j1_debiased_prev,timestral5m_cov,2.29433,2.07329,2.55911,0.87441,PERD,PERD
+68,rte_j1_debiased_prev,timestral_cov_long,1.25536,1.12299,1.42731,0.94765,PERD,PERD
+69,rte_j1_debiased_prev,timesfm3_cov_long,1.46804,1.32231,1.65347,0.88771,PERD,PERD
+70,rte_j1_debiased_prev,chronos2_cov_long,1.45277,1.29996,1.63128,0.84855,PERD,PERD
+71,rte_j1_debiased_prev,ens_lgbm_timestral,1.24107,1.11621,1.38635,0.94674,PERD,PERD
+72,rte_j1_debiased_prev,ens_lgbm_timesfm3,1.26063,1.118,1.42108,0.88834,PERD,PERD
+73,rte_j1_debiased_prev,ens_lgbm_tsfm3,1.16109,1.03501,1.29586,0.92179,PERD,PERD
+74,rte_j1_debiased_prev,ens_all4,1.26079,1.11697,1.42279,0.93886,PERD,PERD
+75,rte_j1_debiased_prev,ens_lgbm_timestral_long,1.05481,0.95479,1.17354,0.93589,PAS DE DIFFÉRENCE,PAS DE DIFFÉRENCE

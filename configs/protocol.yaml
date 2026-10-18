@@ -79,14 +79,18 @@ models:
   timesfm3_cov: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 2048, covariates: full}
   # Contexte long : chaque TSFM à son maximum (Chronos-2 8 192 pas, TimesFM 15 360, Timestral 32 768 = 1,9 an,
   # qui contient la même saison de l'année précédente). Mesure ce que 2 048 pas (42,7 jours) laissent de côté.
-  chronos2_cov_long: {family: chronos2, checkpoint: amazon/chronos-2, context_steps: 8192, covariates: full}
-  timesfm3_cov_long: {family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 15360, covariates: full}
-  timestral_cov_long: {family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 32768, covariates: full}
+  # Segments : le portefeuille seul (le router et le cold-start ne lisent que les variantes à 2 048 pas).
+  chronos2_cov_long: {segments_units: [FLEXGRID], family: chronos2, checkpoint: amazon/chronos-2, context_steps: 8192, covariates: full}
+  timesfm3_cov_long: {segments_units: [FLEXGRID], family: timesfm3, checkpoint: google/timesfm-3.0-pytorch, context_steps: 15360, covariates: full}
+  timestral_cov_long: {segments_units: [FLEXGRID], family: timestral, checkpoint: mistralai/Timestral-209M, context_steps: 32768, covariates: full}
   # Mélanges ajoutés (exploratoires : leur composition s'inspire du succès connu de `ensemble`).
   ens_lgbm_timestral: {members: [lgbm, timestral_cov], rule: quantile_average}
   ens_lgbm_timesfm3: {members: [lgbm, timesfm3_cov], rule: quantile_average}
   ens_lgbm_tsfm3: {members: [lgbm, chronos2_cov, timestral_cov, timesfm3_cov], weights: [0.5, 0.1667, 0.1667, 0.1666], rule: quantile_average}
   ens_all4: {members: [lgbm, chronos2_cov, timestral_cov, timesfm3_cov], rule: quantile_average}
+  # A POSTERIORI (2026-10-18), après avoir vu le national : Timestral à contexte long y fait presque aussi bien
+  # que LightGBM seul. Ce mélange est un résultat exploratoire, jamais un verdict ; dit comme tel partout.
+  ens_lgbm_timestral_long: {members: [lgbm, timestral_cov_long], rule: quantile_average, post_hoc: true}
   # Benchmarks (national seulement).
   rte_j1: {alignment: same}
   rte_j1_debiased: {alignment: same, window_days: 28}
