@@ -215,7 +215,21 @@ def national_figures(protocol: dict) -> list[Path]:
     fcs = add_derived(load_forecasts("national"), "national", protocol)
     act = I.series("national")
     out = []
-    models = ["ensemble", "lgbm", "chronos2_cov", "chronos2", "mstl", "snaive_week", "rte_j1", "rte_j1_debiased"]
+    # Addendum du 2026-10-16 : les TSFM ajoutés ; le mélange avec Timestral long est a posteriori (son étiquette le dit).
+    models = [
+        "ensemble",
+        "ens_lgbm_timestral_long",
+        "lgbm",
+        "timestral_cov_long",
+        "chronos2_cov",
+        "timestral_cov",
+        "timesfm3_cov",
+        "chronos2",
+        "mstl",
+        "snaive_week",
+        "rte_j1",
+        "rte_j1_debiased",
+    ]
     out.append(
         forest(
             po,
@@ -266,7 +280,7 @@ def national_figures(protocol: dict) -> list[Path]:
         day_types(
             po,
             "FR",
-            ["ensemble", "lgbm", "chronos2_cov"],
+            ["ensemble", "lgbm", "chronos2_cov", "timestral_cov_long", "timesfm3_cov"],
             "rte_j1_debiased",
             OUT / "national_day_types.png",
             "National : par type de jour, contre RTE débiaisée",
@@ -338,7 +352,19 @@ def portfolio_figures(protocol: dict) -> list[Path]:
             uid,
             ["rte_prorata", "snaive_week"],
             boot,
-            ["ensemble", "lgbm", "chronos2_cov", "chronos2", "mstl", "rte_prorata", "snaive_week"],
+            [
+                "ensemble",
+                "ens_lgbm_timestral_long",
+                "lgbm",
+                "timestral_cov_long",
+                "chronos2_cov",
+                "timestral_cov",
+                "timesfm3_cov",
+                "chronos2",
+                "mstl",
+                "rte_prorata",
+                "snaive_week",
+            ],
             OUT / "portfolio_forest.png",
             "Portefeuille FlexGrid : contre les baselines d'un BRP sans modèle",
         )
@@ -368,7 +394,7 @@ def portfolio_figures(protocol: dict) -> list[Path]:
         day_types(
             po,
             uid,
-            ["ensemble", "lgbm", "chronos2_cov"],
+            ["ensemble", "lgbm", "chronos2_cov", "timestral_cov_long", "timesfm3_cov"],
             "rte_prorata",
             OUT / "portfolio_day_types.png",
             "Portefeuille : par type de jour, contre RTE au prorata",

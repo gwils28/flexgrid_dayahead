@@ -23,11 +23,13 @@ def fr(x: float, d: int = 2) -> str:
 
 
 MODELS = ["ensemble", "lgbm", "chronos2_cov", "chronos2", "rte_prorata", "mstl", "snaive_week"]
+# Addendum du 2026-10-16 : le meilleur mélange pré-enregistré, les TSFM avec covariables et le mélange a posteriori.
+MODELS_ADDENDUM = ["ens_lgbm_timestral_long", "ens_lgbm_tsfm3", "timestral_cov_long", "timestral_cov", "timesfm3_cov"]
 
 
 def annual_bars(cost: pd.DataFrame, saving: pd.DataFrame, ks: list[float], path: Path) -> Path:
-    c = cost.loc[[m for m in MODELS if m in cost.index]]
-    fig, ax = plt.subplots(figsize=(10, 4.6))
+    c = cost.loc[[m for m in MODELS + MODELS_ADDENDUM if m in cost.index]].sort_values("cost_eur")
+    fig, ax = plt.subplots(figsize=(10, 6.2))
     y = np.arange(len(c))
     ax.barh(y, c.cost_eur / 1e6, 0.6, color=[P.color(m) for m in c.index])
     for i, (_m, r) in enumerate(c.iterrows()):
