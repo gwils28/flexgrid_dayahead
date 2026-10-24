@@ -104,6 +104,38 @@ def route(stump: dict, feat: pd.DataFrame, branches=BRANCHES) -> pd.Series:
     return pd.Series(np.where(to_tsfm, branches[1], branches[0]), index=feat.index)
 
 
+def fit_stump_k(feat: pd.DataFrame, scores: pd.DataFrame, branches: list[str]) -> dict:
+    """Stump à K branches (addendum du 2026-10-16) : une variable et un seuil coupent les segments en deux
+    groupes ; chaque groupe prend la branche au MASE total le plus bas. Sans gain, la meilleure branche partout."""
+    s = scores[branches]
+    tot = s.sum()
+    best = {"feature": None, "threshold": None, "below": tot.idxmin(), "above": tot.idxmin(), "loss": float(tot.min())}
+    for f in FEATURES:
+        x = feat[f].reindex(s.index)
+        for thr in np.unique(x.dropna()):
+            hi = (x >= thr).to_numpy()
+            if hi.all() or not hi.any():
+                continue
+            lo_sum, hi_sum = s[~hi].sum(), s[hi].sum()
+            loss = float(lo_sum.min() + hi_sum.min())
+            if loss < best["loss"] - 1e-12:
+                best = {
+                    "feature": f,
+                    "threshold": float(thr),
+                    "below": lo_sum.idxmin(),
+                    "above": hi_sum.idxmin(),
+                    "loss": loss,
+                }
+    return best
+
+
+def route_k(stump: dict, feat: pd.DataFrame) -> pd.Series:
+    if stump["feature"] is None:
+        return pd.Series(stump["below"], index=feat.index)
+    hi = feat[stump["feature"]] >= stump["threshold"]
+    return pd.Series(np.where(hi, stump["above"], stump["below"]), index=feat.index)
+
+
 def policy_scores(scores: pd.DataFrame, routes: pd.Series, branches=BRANCHES) -> pd.DataFrame:
     """MASE par segment pour chaque politique (sur une fenêtre de scores)."""
     s = scores.loc[routes.index]
@@ -137,6 +169,19 @@ def run(protocol: dict, po: pd.DataFrame, log=print) -> dict:
     stump = fit_stump(feat_val, s_val)
     routes = route(stump, feat_test)
     pol = policy_scores(s_test, routes)
+    # Addendum du 2026-10-16 : quatre branches, et les mélanges de l'addendum, quand leurs prévisions existent.
+    b4 = protocol["router"].get("branches4", [])
+    stump4 = None
+    if b4 and set(b4) <= set(s_val.columns):
+        stump4 = fit_stump_k(feat_val, s_val, b4)
+        routes4 = route_k(stump4, feat_test)
+        for b in b4[2:]:
+            pol[f"always_{b}"] = s_test.loc[pol.index, b]
+        pol["learned_stump4"] = [s_test.loc[u, b] for u, b in routes4.items()]
+        pol["oracle4"] = s_test.loc[pol.index, b4].min(axis=1)
+        for m in ["ens_lgbm_timestral", "ens_lgbm_timesfm3", "ens_lgbm_tsfm3", "ens_all4"]:
+            if m in s_test:
+                pol[m] = s_test.loc[pol.index, m]
     rng = np.random.default_rng(protocol["seed"])
     n = len(pol)
     ci = {}
@@ -156,9 +201,13 @@ def run(protocol: dict, po: pd.DataFrame, log=print) -> dict:
         log(f"router dérive {day.date()} : {int((r == BRANCHES[1]).sum())} segments vers Chronos-2")
     drift = pd.DataFrame(drift)
     RESULTS.mkdir(exist_ok=True)
-    feat_test.join(s_test[list(BRANCHES)], how="left").assign(route=routes).to_csv(RESULTS / "router_units.csv")
+    units = feat_test.join(s_test[[b for b in dict.fromkeys([*BRANCHES, *b4]) if b in s_test]], how="left")
+    units = units.assign(route=routes)
+    if stump4:
+        units["route4"] = routes4
+    units.to_csv(RESULTS / "router_units.csv")
     pol.to_csv(RESULTS / "router_policies.csv")
     drift.to_csv(RESULTS / "router_drift.csv")
-    out = {"stump": stump, "stump28": stump28, "ratio_vs_always_lgbm": ci}
+    out = {"stump": stump, "stump28": stump28, "stump4": stump4, "ratio_vs_always_lgbm": ci}
     (RESULTS / "router_summary.json").write_text(json.dumps(out, indent=2, ensure_ascii=False, default=float))
     return out

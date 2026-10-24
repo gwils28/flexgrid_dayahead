@@ -38,3 +38,15 @@ def test_cold_start_siblings_never_include_held_out_regions():
     ids = ["52_P2_ENT1", "24_P2_ENT1", "11_P2_ENT1", "11_P1_ENT1", "53_P2_ENT1", "FLEXGRID"]
     sibs = siblings("52_P2_ENT1", ids)
     assert sibs == ["11_P2_ENT1", "24_P2_ENT1"] and not any(s[:2] in HELD_OUT for s in sibs)
+
+
+def test_stump_k_gives_each_side_its_best_branch():
+    idx = [f"u{i}" for i in range(6)]
+    feat = pd.DataFrame({f: 0.0 for f in router.FEATURES}, index=idx)
+    feat["cv"] = [0, 0, 0, 1, 1, 1]
+    scores = pd.DataFrame(
+        {"a": [1, 1, 1, 3, 3, 3], "b": [2, 2, 2, 2, 2, 2], "c": [3, 3, 3, 1, 1, 1]}, index=idx, dtype=float
+    )
+    s = router.fit_stump_k(feat, scores, ["a", "b", "c"])
+    assert (s["feature"], s["below"], s["above"], s["loss"]) == ("cv", "a", "c", 6.0)
+    assert router.route_k(s, feat).tolist() == ["a"] * 3 + ["c"] * 3
