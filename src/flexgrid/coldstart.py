@@ -104,6 +104,70 @@ def run(protocol: dict, step_days: int = 7, log=print) -> pd.DataFrame:
     return fc
 
 
+def run_addendum(protocol: dict, step_days: int = 7, log=print) -> pd.DataFrame:
+    """Addendum du 2026-10-16 : Timestral et TimesFM 3.0 sur les mêmes historiques tronqués et les mêmes origines.
+
+    Écrit results/forecasts/coldstart_addendum.parquet ; `score` lit les deux fichiers."""
+    import numpy as np
+
+    from flexgrid.models import tsfm
+
+    y = I.series("segments")
+    y = y[y.unique_id != dataset.PORTFOLIO_ID]
+    ids = sorted(y.unique_id.unique())
+    held = held_out_ids(y)
+    series = {u: g.set_index("ds").y.sort_index() for u, g in y.groupby("unique_id")}
+    region = y.groupby("unique_id").region.first().to_dict()
+    wo, wf = dataset.load("weather_observed"), dataset.load("weather_forecast")
+    school = pd.read_parquet(RAW / "calendrier_scolaire.parquet")
+    wx = {u: (lgbm.weather_for(wo, r), lgbm.weather_for(wf, r)) for u, r in region.items()}
+    test = protocol["windows"]["test"]
+    ors = origins(test[0], test[1], "segments")[::step_days]
+    models = [m for m in protocol["cold_start"]["models_addendum"] if m != "timestral_fewshot"]
+    specs = protocol["models"]
+    out = []
+    for i, o in enumerate(ors):
+        for L in protocol["cold_start"]["history_days"]:
+            start = o.cutoff - pd.Timedelta(days=L) + pd.Timedelta("30min")
+            trunc = {u: series[u].loc[start : o.cutoff] for u in held}
+            for m in models:
+                spec = specs[m]
+                mode = chronos.cov_mode(spec["covariates"])
+                items = [chronos.make_input(trunc[u], o, L * 48, mode, *wx[u], school) for u in held]
+                preds = tsfm.predict(items, o.horizon, spec)
+                out += [
+                    chronos.to_frame(p, o, u)
+                    .drop(columns=["day", "h"])
+                    .assign(model=m, unique_id=u, history_days=L, day=o.day)
+                    for u, p in zip(held, preds, strict=True)
+                ]
+            # Few-shot Timestral : cible masquée avant la troncature, frères complets en covariables passées.
+            groups: dict[str, list[str]] = {}
+            for u in held:
+                groups.setdefault(u[2:], []).append(u)
+            for targets in groups.values():
+                sibs = siblings(targets[0], ids)
+                items = []
+                for u in targets:
+                    it = chronos.make_input(series[u], o, 2048, "full", *wx[u], school)
+                    it["target"] = np.where(
+                        np.arange(len(it["target"])) < len(it["target"]) - L * 48, np.nan, it["target"]
+                    )
+                    items.append(it)
+                sib = [series[s_].loc[: o.cutoff].tail(2048).to_numpy(dtype=float) for s_ in sibs]
+                preds = tsfm.predict_timestral_fewshot(items, sib, o.horizon, specs["timestral_cov"]["checkpoint"])
+                out += [
+                    chronos.to_frame(p, o, u)
+                    .drop(columns=["day", "h"])
+                    .assign(model="timestral_fewshot", unique_id=u, history_days=L, day=o.day)
+                    for u, p in zip(targets, preds, strict=True)
+                ]
+        log(f"cold-start addendum {o.day.date()} ({i + 1}/{len(ors)})")
+    fc = pd.concat(out, ignore_index=True)
+    fc.to_parquet(RESULTS / "forecasts" / "coldstart_addendum.parquet")
+    return fc
+
+
 def score(protocol: dict) -> pd.DataFrame:
     """Métriques par (modèle, historique, segment, origine), plus la référence « historique complet » du backtest.
 
@@ -113,6 +177,9 @@ def score(protocol: dict) -> pd.DataFrame:
     from flexgrid import inference, metrics
 
     fc = pd.read_parquet(RESULTS / "forecasts" / "coldstart.parquet")
+    add = RESULTS / "forecasts" / "coldstart_addendum.parquet"
+    if add.exists():
+        fc = pd.concat([fc, pd.read_parquet(add)[fc.columns]], ignore_index=True)
     fc = dataset.as_ns(fc)
     y = I.series("segments")
     parts = []
@@ -124,7 +191,19 @@ def score(protocol: dict) -> pd.DataFrame:
     # Référence : les mêmes segments et jours dans le backtest à historique complet.
     full = pd.read_parquet(RESULTS / "per_origin_segments.parquet")
     keys = po[["unique_id", "day"]].drop_duplicates()
-    full = full[full.model.isin(["lgbm", "chronos2_cov", "ensemble", "snaive_week"])].merge(keys)
+    full_models = [
+        "lgbm",
+        "chronos2_cov",
+        "ensemble",
+        "snaive_week",
+        "timestral_cov",
+        "timesfm3_cov",
+        "timestral",
+        "timesfm3",
+        "timestral5m_cov",
+        "ens_lgbm_tsfm3",
+    ]
+    full = full[full.model.isin(full_models)].merge(keys)
     full = full.assign(ae=full.mae * full.n, y=full.y_mean * full.n, ape=full.mape, history_days=0)
     po = pd.concat([po, full[po.columns]], ignore_index=True)
     po.to_parquet(RESULTS / "coldstart_per_origin.parquet", compression="zstd")

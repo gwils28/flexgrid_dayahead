@@ -87,13 +87,14 @@ def tables_cmd() -> None:
 @app.command("figures-results")
 def figures_results() -> None:
     """Figures des blocs B, C et du coût."""
-    from flexgrid import figures_cost, figures_results
+    from flexgrid import figures_cost, figures_results, figures_tsfm
 
     protocol = load_protocol()
     for p in [
         *figures_results.national_figures(protocol),
         *figures_results.portfolio_figures(protocol),
         *figures_cost.all_figures(protocol),
+        *figures_tsfm.all_figures(protocol),
     ]:
         print(p)
 
@@ -120,12 +121,16 @@ def figures_router() -> None:
 
 
 @app.command("coldstart")
-def coldstart_cmd(score_only: bool = False) -> None:
-    """Cold-start : historiques tronqués à 7, 14, 28, 56 jours sur trois régions tenues à l'écart."""
+def coldstart_cmd(score_only: bool = False, addendum: bool = False) -> None:
+    """Cold-start : historiques tronqués à 7, 14, 28, 56 jours sur trois régions tenues à l'écart.
+
+    `--addendum` : seulement Timestral et TimesFM 3.0 (addendum du 2026-10-16), puis la notation de tout."""
     from flexgrid import coldstart
 
     protocol = load_protocol()
-    if not score_only:
+    if addendum:
+        coldstart.run_addendum(protocol, log=lambda s: print(s, flush=True))
+    elif not score_only:
         fc = coldstart.run(protocol, log=lambda s: print(s, flush=True))
         print(len(fc), "lignes")
     print(coldstart.score(protocol).round(4).to_string(index=False))

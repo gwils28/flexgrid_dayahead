@@ -19,6 +19,13 @@ POLICY_LABELS = {
     "learned_stump": "router appris (stump)",
     "oracle": "router oracle (a posteriori)",
     "ensemble": "mélange des deux",
+    "always_timestral_cov": "toujours Timestral + cov.",
+    "always_timesfm3_cov": "toujours TimesFM 3.0 + cov.",
+    "learned_stump4": "router appris, 4 branches",
+    "oracle4": "router oracle, 4 branches",
+    "ens_lgbm_timestral": "mélange LGBM + Timestral",
+    "ens_lgbm_tsfm3": "mélange LGBM ½ + 3 TSFM ½",
+    "ens_all4": "mélange à parts égales des 4",
 }
 POLICY_COLORS = {
     "always_lgbm": P.color("lgbm"),
@@ -26,13 +33,33 @@ POLICY_COLORS = {
     "learned_stump": P.SLOTS[6],
     "oracle": P.MUTED,
     "ensemble": P.color("ensemble"),
+    "always_timestral_cov": P.color("timestral_cov"),
+    "always_timesfm3_cov": P.color("timesfm3_cov"),
+    "learned_stump4": P.SLOTS[6],
+    "oracle4": P.MUTED,
+    "ens_lgbm_timestral": P.color("ensemble"),
+    "ens_lgbm_tsfm3": P.color("ens_lgbm_tsfm3"),
+    "ens_all4": P.color("ens_all4"),
 }
+# Addendum du 2026-10-16 : les politiques à quatre branches, sous une ligne de séparation.
+ORDER = ["always_chronos2_cov", "always_lgbm", "learned_stump", "oracle", "ensemble"]
+ORDER4 = [
+    "always_timesfm3_cov",
+    "always_timestral_cov",
+    "learned_stump4",
+    "oracle4",
+    "ens_all4",
+    "ens_lgbm_timestral",
+    "ens_lgbm_tsfm3",
+]
 
 
 def policies(summary: dict, path: Path) -> Path:
     ci = summary["ratio_vs_always_lgbm"]
-    order = ["always_chronos2_cov", "always_lgbm", "learned_stump", "oracle", "ensemble"]
-    fig, ax = plt.subplots(figsize=(9, 3.8))
+    order = ORDER + [k for k in ORDER4 if k in ci]
+    fig, ax = plt.subplots(figsize=(9, 3.8 if len(order) == len(ORDER) else 6.2))
+    if len(order) > len(ORDER):
+        ax.axhline(len(ORDER) - 0.5, color=P.MUTED, lw=1, ls="--")
     for i, k in enumerate(order):
         est, lo, hi = ci[k]
         ax.plot([lo, hi], [i, i], color=POLICY_COLORS[k], lw=2.5, solid_capstyle="round")
@@ -45,7 +72,7 @@ def policies(summary: dict, path: Path) -> Path:
     P.titled(
         ax,
         "Router : choisir un modèle par segment, ou mélanger ?",
-        "81 segments ; trait : IC 95 % (bootstrap sur les segments)",
+        "81 segments ; trait : IC 95 % (bootstrap sur les segments) ; sous le tiret : addendum Timestral, TimesFM",
     )
     fig.tight_layout()
     return P.save(fig, path)
@@ -123,6 +150,39 @@ def coldstart(cs: pd.DataFrame, n_units: int, n_origins: int, path: Path) -> Pat
     return P.save(fig, path)
 
 
+def coldstart_tsfm(cs: pd.DataFrame, n_units: int, n_origins: int, path: Path) -> Path:
+    """Addendum : les nouveaux TSFM sur un segment presque neuf, face au few-shot de Chronos-2."""
+    fig, ax = plt.subplots(figsize=(9, 5))
+    lengths = sorted(L for L in cs.history_days.unique() if L > 0)
+    styles = {
+        "snaive_week": "o-",
+        "chronos2_fewshot": "s--",
+        "timestral": "o:",
+        "timestral_cov": "o-",
+        "timestral_fewshot": "s--",
+        "timesfm3_cov": "o-",
+        "timestral5m_cov": "^-",
+    }
+    for m, st in styles.items():
+        d = cs[(cs.model == m) & (cs.history_days > 0)].set_index("history_days").reindex(lengths)
+        if d.wape.isna().all():
+            continue
+        ax.plot(range(len(lengths)), d.wape * 100, st, color=P.color(m), label=P.label(m), ms=7)
+    ax.set_xticks(range(len(lengths)), [f"{L} jours" for L in lengths])
+    ax.set_xlabel("historique du segment à l'émission")
+    ax.set_ylabel("WAPE (%)")
+    ax.set_ylim(0, 22)
+    P.titled(
+        ax,
+        "Cold-start : Timestral et TimesFM 3.0 sur un segment presque neuf",
+        f"{n_units} segments de 3 régions tenues à l'écart, {n_origins} origines ; "
+        "tiret : variante few-shot (les frères des autres régions en contexte)",
+    )
+    ax.legend(fontsize=8, ncol=2)
+    fig.tight_layout()
+    return P.save(fig, path)
+
+
 def all_figures(protocol: dict) -> list[Path]:
     P.setup()
     summary = json.loads((RESULTS / "router_summary.json").read_text())
@@ -142,4 +202,9 @@ def _coldstart_figures() -> list[Path]:
     po = pd.read_parquet(RESULTS / "coldstart_per_origin.parquet")
     po = po[po.history_days > 0]
     cs = pd.read_csv(RESULTS / "coldstart_summary.csv")
-    return [coldstart(cs, po.unique_id.nunique(), po.day.nunique(), OUT / "coldstart.png")]
+    n_units, n_origins = po.unique_id.nunique(), po.day.nunique()
+    old = cs[cs.model.isin(["snaive_week", "chronos2", "chronos2_cov", "chronos2_fewshot", "lgbm"])]
+    return [
+        coldstart(old, n_units, n_origins, OUT / "coldstart.png"),
+        coldstart_tsfm(cs, n_units, n_origins, OUT / "coldstart_tsfm.png"),
+    ]

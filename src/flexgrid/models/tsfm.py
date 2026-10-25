@@ -78,6 +78,24 @@ def predict_timestral(items: list[dict], horizon: int, checkpoint: str, device: 
     return [q[i, 0][:, idx] for i in range(len(items))]
 
 
+def predict_timestral_fewshot(
+    targets: list[dict], siblings: list[np.ndarray], horizon: int, checkpoint: str, device: str = DEVICE
+) -> list[np.ndarray]:
+    """Few-shot du cold-start : les historiques complets des frères entrent comme covariables passées.
+
+    `targets` : entrées de `chronos.make_input` sur 2 048 pas, dont la cible a déjà été masquée (NaN) avant la
+    troncature ; `siblings` : (C, T) aux mêmes instants. Les covariables connues (météo, calendrier) restent."""
+    model = _timestral(checkpoint, device)
+    ctx = np.stack([it["target"] for it in targets])[:, None, :].astype(np.float32)
+    past = np.repeat(np.stack(siblings)[None], len(targets), axis=0).astype(np.float32)
+    known = np.stack([_known(it) for it in targets]).astype(np.float32)
+    f = model.forecast(ctx, prediction_length=horizon, past_covariates=past, known_covariates=known)
+    levels = np.round(np.asarray(f.quantile_levels), 4)
+    idx = [int(np.flatnonzero(levels == round(q, 4))[0]) for q in QUANTILES]
+    q = f.quantiles.float().cpu().numpy() if torch.is_tensor(f.quantiles) else np.asarray(f.quantiles)
+    return [q[i, 0][:, idx] for i in range(len(targets))]
+
+
 def timesfm_to_grid(q9: np.ndarray) -> np.ndarray:
     """(H, 9) aux niveaux 0,1..0,9 -> (H, 7) aux niveaux du protocole (interpolation, queues gaussiennes)."""
     levels = np.round(np.arange(1, 10) / 10, 1)
