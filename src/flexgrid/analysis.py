@@ -165,6 +165,39 @@ def calendar_ablation(protocol: dict, po: pd.DataFrame, uid: str) -> pd.DataFram
     return pd.DataFrame(rows)
 
 
+def production_switch(protocol: dict, po: pd.DataFrame) -> pd.DataFrame:
+    """Question 3 de l'addendum : le service change-t-il de modèle ?
+
+    Règle pré-enregistrée : un mélange de l'addendum remplace `ensemble` seulement si son MAE sur le portefeuille
+    est plus bas pendant la validation ; l'année de test confirme ou infirme. Le mélange a posteriori est montré,
+    mais n'est pas éligible.
+    """
+    boot = protocol["verdict"]["bootstrap"]
+    pf = po[po.unique_id == dataset.PORTFOLIO_ID]
+    val = pf[pf.window == protocol["addendum_2026_10_16"]["production_switch_window"]]
+    test = pf[pf.window == "test"]
+    ref = val[val.model == "ensemble"].mae.mean()
+    rows = []
+    for m in present(pf, NEW_ENSEMBLES):
+        est, lo, hi = inference.compare(test, m, "ensemble", "mae", boot)
+        post_hoc = bool(protocol["models"][m].get("post_hoc", False))
+        mae_val = val[val.model == m].mae.mean()
+        rows.append(
+            {
+                "model": m,
+                "post_hoc": post_hoc,
+                "mae_validation": mae_val,
+                "mae_validation_ensemble": ref,
+                "eligible_switch": (not post_hoc) and mae_val < ref,
+                "test_ratio_vs_ensemble": est,
+                "ci_low": lo,
+                "ci_high": hi,
+                "test_verdict": inference.verdict(lo, hi, None, (0, 1)),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def national_cost_scaled(protocol: dict, po: pd.DataFrame) -> pd.DataFrame:
     """Coût annuel du national ramené à l'énergie du brief (comparaison seulement, SPEC angle mort 6)."""
     test = protocol["windows"]["test"]
@@ -197,6 +230,7 @@ def tables(protocol: dict) -> dict[str, pd.DataFrame]:
         if seg.exists() and "timestral_cov" in set(s.model):
             out["tsfm_grid_portfolio"] = tsfm_grid(protocol, s, "FLEXGRID")
             out["calendar_ablation_portfolio"] = calendar_ablation(protocol, s, "FLEXGRID")
+            out["production_switch"] = production_switch(protocol, s)
     for k, d in out.items():
         d.round(5).to_csv(RESULTS / f"{k}.csv")
     return out

@@ -63,6 +63,34 @@ par `ENTSOE_TOKEN_FILE`, monté par Docker comme secret (`.secrets/entsoe_token`
 ni dans le code, ni dans la configuration, ni dans l'image. Faute de token, le service tourne sur éCO2mix et
 Energy-Charts. Le client est testé sur une réponse XML enregistrée.
 
+### Addendum du 2026-10-16 : le service garde le mélange LightGBM + Chronos-2
+
+La règle était fixée avant les calculs (`configs/protocol.yaml`, `addendum_2026_10_16`, question 3) : un mélange
+de l'addendum ne remplace `ensemble` que s'il a un MAE plus bas sur le portefeuille pendant la validation
+(janvier-juin 2025), et l'année de test confirme ou infirme. Nombres : `results/production_switch.csv`
+(`uv run flexgrid tables`).
+
+| Mélange | MAE validation (MW) | Éligible | MAE test / `ensemble` (IC 95 %) |
+|---|---|---|---|
+| `ensemble` (LightGBM + Chronos-2, en service) | 2,92 | | 1 |
+| LightGBM ½ + Chronos-2, Timestral, TimesFM ⅙ chacun | 2,84 | oui | 1,014 [0,988 ; 1,042] |
+| LightGBM + Timestral | 2,90 | oui | 1,032 [0,999 ; 1,074] |
+| LightGBM + TimesFM 3.0 | 3,11 | non | 1,147 [1,095 ; 1,200] |
+| Les quatre à parts égales | 3,00 | non | 1,103 [1,057 ; 1,156] |
+| LightGBM + Timestral contexte long (a posteriori) | 2,68 | non (a posteriori) | 0,930 [0,885 ; 0,984] |
+
+Deux mélanges passent la validation ; l'année de test ne confirme ni l'un ni l'autre (« pas de différence »), et
+chacun demanderait deux modèles de plus sur le GPU. **Le service ne change pas** : `nomination_model: ensemble`.
+Le mélange avec Timestral à contexte long est le seul à faire mieux sur le test, mais il a été construit après
+avoir vu le national : il sera candidat d'un prochain protocole, évalué sur une fenêtre qu'il n'a pas vue.
+
+Timestral-5M tourne sur CPU ; il aurait pu servir de repli sans GPU. Il ne fait pas l'affaire : MAE de 5,36 MW sur
+le portefeuille (`results/summary_portfolio.csv`), au niveau de RTE au prorata (5,28), contre 2,64 pour LightGBM,
+qui reste le repli.
+
+Licence : les poids de TimesFM 3.0 excluent l'usage commercial. Ce dépôt est une veille personnelle ; si un
+mélange avec TimesFM avait été retenu, il n'aurait pas pu servir chez un vrai BRP sans autre licence.
+
 ### Ce qui manque pour une vraie production
 
 - **L'ingestion temps réel.** Le service lit les snapshots figés de `data/raw/`. Brancher les API (éCO2mix,

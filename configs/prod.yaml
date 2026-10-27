@@ -5,5 +5,7 @@ families:
   national: {unique_id: FR}
   segments: {unique_id: FLEXGRID}      # le service ne nomme que le portefeuille
 nomination_model: ensemble             # lgbm | chronos2_cov | ensemble
+# Addendum du 2026-10-16 : aucun mélange avec Timestral ou TimesFM 3.0 ne passe la règle de bascule
+# (results/production_switch.csv, 05_production/README.md) ; le service garde `ensemble`.
 fallback_model: lgbm                   # si Chronos-2 (GPU) échoue ou dépasse son délai
 chronos_timeout_s: 300

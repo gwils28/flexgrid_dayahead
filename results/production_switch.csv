@@ -1,0 +1,6 @@
+,model,post_hoc,mae_validation,mae_validation_ensemble,eligible_switch,test_ratio_vs_ensemble,ci_low,ci_high,test_verdict
+0,ens_lgbm_timestral,False,2.8977,2.91944,True,1.03242,0.99865,1.07383,PAS DE DIFFÉRENCE
+1,ens_lgbm_timesfm3,False,3.10658,2.91944,False,1.14705,1.09548,1.20037,PERD
+2,ens_lgbm_tsfm3,False,2.84121,2.91944,True,1.01354,0.98825,1.04168,PAS DE DIFFÉRENCE
+3,ens_all4,False,3.00158,2.91944,False,1.10311,1.05726,1.15581,PERD
+4,ens_lgbm_timestral_long,True,2.67571,2.91944,False,0.9299,0.88537,0.98425,GAGNE
