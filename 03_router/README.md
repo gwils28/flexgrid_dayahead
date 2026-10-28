@@ -8,7 +8,8 @@ Deux questions du brief (bloc B) sur le panel des 81 segments tertiaires Enedis 
 
 Commandes : `uv run flexgrid router`, `uv run flexgrid coldstart`, puis `uv run flexgrid figures-router`.
 Nombres : `results/router_summary.json`, `results/router_units.csv`, `results/router_drift.csv`,
-`results/coldstart_summary.csv`.
+`results/coldstart_summary.csv`. L'addendum du 2026-10-16 (Timestral, TimesFM 3.0) est en section 3 ; il ne
+change aucun nombre des sections 1 et 2.
 
 ## 1. Le router
 
@@ -113,3 +114,68 @@ Les ratios de WAPE contre la naïve, avec IC 95 % (bootstrap sur les 53 origines
 
 Limite : les segments sont des agrégats de centaines de sites. Un vrai nouveau site isolé est bien plus bruité, et
 la naïve y serait sans doute moins bonne. Ce qui est simulé ici, c'est l'arrivée d'un nouveau *portefeuille*.
+
+
+## 3. Addendum du 2026-10-16 : Timestral et TimesFM 3.0
+
+Commandes : `uv run flexgrid router` (les politiques à quatre branches sont calculées avec les autres) et
+`uv run flexgrid coldstart --addendum`. Même panel, mêmes variables, mêmes origines que ci-dessus.
+
+### Un router à quatre branches
+
+Branches : LightGBM, Chronos-2, Timestral-209M et TimesFM 3.0, chacun avec météo et calendrier. Le stump coupe
+les segments en deux groupes et donne à chacun la branche au MASE le plus bas sur la validation
+(`results/router_summary.json`, clés `stump4` et `ratio_vs_always_lgbm`).
+
+| Politique (MASE moyen / toujours LightGBM) | ratio | IC 95 % |
+|---|---|---|
+| toujours TimesFM 3.0 + covariables | 1,272 | [1,226 ; 1,315] |
+| toujours Timestral + covariables | 1,164 | [1,131 ; 1,196] |
+| router appris, 4 branches | 0,995 | [0,986 ; 1,000] |
+| router oracle, 4 branches | 0,981 | [0,967 ; 0,992] |
+| mélange à parts égales des quatre | 0,987 | [0,964 ; 1,009] |
+| mélange LightGBM + Timestral | 0,970 | [0,954 ; 0,984] |
+| mélange LightGBM ½ + trois TSFM ⅙ | 0,941 | [0,927 ; 0,954] |
+| mélange LightGBM + Chronos-2 (section 1) | **0,932** | [0,920 ; 0,944] |
+
+- Le stump à quatre branches choisit le même seuil que celui à deux (coefficient de variation ≥ 0,61) et envoie
+  le même segment, 84_P4_ENT1, vers Timestral au lieu de Chronos-2. Les 80 autres restent à LightGBM.
+- Sur l'année de test, la meilleure branche a posteriori est LightGBM pour 66 segments, Chronos-2 pour 12,
+  Timestral pour 2 et TimesFM 3.0 pour 1 (`results/router_units.csv`). Deux branches de plus montent l'oracle de
+  0,982 à 0,981 : **le plafond du routage ne bouge pas.**
+- Sur le panel, Timestral et TimesFM font moins bien que Chronos-2 (MAE de 4,12 et 4,58 MW contre 3,88,
+  `results/summary_panel.csv`), et aucun mélange qui les contient ne bat le mélange d'origine.
+
+![Politiques, avec l'addendum](figures/router_policies.png)
+
+### Cold-start : le few-shot de Timestral aide à 7 jours
+
+Timestral accepte des covariables passées qui ne sont pas des séries du lot : les frères du segment (même tranche
+et profil, autres régions) entrent comme covariables passées, avec leur historique complet, et la cible tronquée est
+complétée à gauche par des valeurs manquantes. TimesFM 3.0 exige des covariables de la longueur de la cible : pas
+de few-shot pour lui.
+
+![Cold-start, addendum](figures/coldstart_tsfm.png)
+
+| WAPE | 7 jours | 14 jours | 28 jours | 56 jours | historique complet |
+|---|---|---|---|---|---|
+| Naïve S-1 | 6,6 % | 6,6 % | 6,6 % | 6,6 % | 6,7 % |
+| LightGBM (section 2) | 12,6 % | **3,9 %** | **3,9 %** | 3,9 % | 3,4 % |
+| Chronos-2 few-shot (section 2) | 19,7 % | 4,4 % | 4,0 % | 3,8 % | |
+| **Timestral few-shot** | **5,7 %** | 4,2 % | 4,0 % | 3,8 % | |
+| Timestral + covariables | 11,6 % | 5,1 % | 4,1 % | **3,7 %** | 3,8 % |
+| Timestral sans covariables | 10,7 % | 5,5 % | 4,8 % | 4,6 % | 4,6 % |
+| TimesFM 3.0 + covariables | 7,2 % | 5,0 % | 4,4 % | 4,4 % | 4,3 % |
+| Timestral-5M + covariables (CPU) | 20,1 % | 10,0 % | 6,1 % | 5,2 % | 5,7 % |
+
+1. **À 7 jours, Timestral few-shot est le seul modèle sous la naïve** : WAPE de 5,7 % contre 6,6 %. Le ratio,
+   0,87 [0,73 ; 1,04], ne permet pas de conclure qu'il la bat, mais c'est le premier modèle qui ne s'effondre pas :
+   Chronos-2 few-shot est à 19,7 % (2,97 fois la naïve). Le frère apporte la forme hebdomadaire qu'une semaine de
+   contexte ne contient pas. Timestral sans frères, lui, est à 11,6 %.
+2. TimesFM 3.0 se défend aussi à 7 jours (7,2 %, ratio 1,09 [0,94 ; 1,28]) sans frères.
+3. Dès 14 jours, LightGBM appris sur les autres régions reste devant (3,9 % contre 4,2 % pour Timestral few-shot ;
+   ratios 0,59 et 0,63 contre la naïve, IC qui se chevauchent).
+
+Ce qu'on retient : la règle de la section 2 (« la naïve pendant deux semaines, puis le modèle global ») tient.
+Timestral few-shot est la première alternative crédible à la naïve pour la première semaine ; il faudrait des
+segments plus petits, ou de vrais nouveaux sites, pour dire s'il la bat.

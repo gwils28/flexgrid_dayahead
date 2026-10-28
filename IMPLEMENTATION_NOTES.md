@@ -81,3 +81,39 @@ récentes en dernier.
   de la semaine qui précède le jour prévu (`dagster_defs.needs_refit`).
 - Le service et le backtest donnent les mêmes quantiles quand ils réapprennent à la même date (Chronos-2 : toujours ;
   LightGBM : le mardi). C'est le contrôle qui relie les verdicts du backtest au code servi.
+
+## Addendum du 2026-10-16 : Timestral et TimesFM 3.0
+
+- **Ajout déclaré, pas une partie du protocole d'origine.** Timestral (Mistral AI) est sorti le 15 octobre 2026,
+  après la fin du projet. L'addendum (`configs/protocol.yaml`, `addendum_2026_10_16`) a été écrit avant toute
+  prévision de ces modèles, mais en connaissant les résultats de tous les autres : le choix de mélanger les
+  nouveaux TSFM avec LightGBM s'inspire du succès connu du mélange d'origine. Aucune valeur d'origine ne change.
+- Entrées identiques pour les trois TSFM : `chronos.make_input` construit l'historique et les covariables, seul
+  l'appel au modèle diffère (`models/tsfm.py`). Réglages publiés par défaut, aucun réglage choisi sur le test.
+- **TimesFM 3.0 n'émet que 9 quantiles (0,1 à 0,9).** q0,25 et q0,75 sont interpolés ; q0,05 et q0,95 sont
+  extrapolés en supposant des queues gaussiennes. Sa couverture 90 % brute dépend donc de cette hypothèse ; la
+  réparation conforme, qui ne lit que la médiane, n'en dépend pas. Testé sur une loi gaussienne
+  (`tests/test_tsfm.py`).
+- **Contexte long sur les segments : portefeuille seul (2026-10-18).** À 32 768 pas, 82 segments et 546 origines
+  auraient pris plusieurs heures de GPU pour des prévisions que ni le router ni le cold-start ne lisent (ils
+  utilisent les variantes à 2 048 pas). Les variantes `*_cov_long` ne sont calculées que pour FLEXGRID et le national.
+- **Mélange a posteriori, déclaré comme tel (2026-10-18) : `ens_lgbm_timestral_long`.** Ajouté après avoir vu que
+  Timestral à contexte long fait presque aussi bien que LightGBM seul au national. C'est un résultat exploratoire :
+  il n'entre dans aucun verdict pré-enregistré, et son étiquette le dit dans chaque figure.
+- Licence : les poids de TimesFM 3.0 sont non commerciaux et excluent la production. Le projet est une veille
+  personnelle sans usage commercial ; l'auteur a choisi d'inclure TimesFM dans l'étude comme dans le service.
+- **Few-shot de Timestral au cold-start.** Les frères du segment entrent comme covariables passées (2 048 pas,
+  historique complet) ; la cible tronquée est complétée à gauche par des valeurs manquantes. Les frères sont
+  masqués comme la cible au-delà de l'horloge de nomination. TimesFM 3.0 n'a pas de few-shot : il exige des
+  covariables de la même longueur que la cible.
+- **Lecture de la règle de bascule (question 3, 2026-10-27).** La règle dit « seulement si » un mélange de
+  l'addendum fait mieux que `ensemble` en validation, « l'année de test confirme ou infirme ». Deux mélanges
+  passent la validation (LightGBM ½ + trois TSFM : 2,84 MW contre 2,92 ; LightGBM + Timestral : 2,90) ; aucun
+  n'est confirmé sur le test (1,014 [0,988 ; 1,042] et 1,032 [0,999 ; 1,074]). La condition est lue comme
+  nécessaire, pas suffisante : le service garde `ensemble` (`results/production_switch.csv`). Basculer aurait
+  ajouté deux modèles sur le GPU pour un gain que le test ne montre pas.
+- **Couleurs.** Huit teintes pour plus de huit modèles : une teinte par famille (Timestral-209M et Timestral-5M
+  partagent la leur, comme les mélanges de l'addendum). Dans chaque figure, l'étiquette, le marqueur ou le trait
+  distingue les variantes.
+- **Non étendu à l'addendum** : la surveillance rejouée (bloc E) et le router par dérive ne suivent que le modèle
+  en service, qui ne change pas.

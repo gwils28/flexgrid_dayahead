@@ -3,7 +3,8 @@
 Rolling-origin sur **365 jours de livraison** (1er juillet 2025 → 30 juin 2026), prévision émise chaque veille à
 9 h, précédés de 181 jours de validation (janvier-juin 2025) qui servent au router et à la calibration conforme.
 Commandes : `flexgrid forecast <famille> <modèles>`, puis `flexgrid score national segments`. Les nombres viennent
-de `results/summary_national.csv` et `results/verdicts_national.csv`.
+de `results/summary_national.csv` et `results/verdicts_national.csv`. Timestral et TimesFM 3.0, ajoutés le
+2026-10-16, ont leur [propre section](#addendum-du-2026-10-16--timestral-et-timesfm-30) à la fin.
 
 ## La réponse en une phrase (national)
 
@@ -135,7 +136,7 @@ pas comme sur le national.
 
 ![Portefeuille par type de jour](figures/portfolio_day_types.png)
 
-Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où l'un de ces trois modèles perd. Sur les ponts, tous perdent contre
+Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où l'un de ces modèles perd. Sur les ponts, tous perdent contre
 RTE au prorata : un pont dans le tertiaire, c'est la moitié des bureaux fermés, ce qu'aucune variable du calendrier
 ne mesure bien. Sur les fériés, LightGBM (0,42) fait bien mieux que Chronos-2 (1,25), comme sur le national.
 Noël le montre :
@@ -183,3 +184,89 @@ plutôt que les mélanger ?
 | Naïve S-1 | 7,17 | 7,55 % | 1,035 | 0,866 |
 | ETS saisonnier | 10,48 | 11,27 % | 1,513 | 0,832 |
 | Naïve J-1 | 12,42 | 12,90 % | 1,794 | 0,874 |
+
+
+## Addendum du 2026-10-16 : Timestral et TimesFM 3.0
+
+Deux TSFM sont sortis après la fin du projet : **TimesFM 3.0** (Google Research, 31 août 2026) et **Timestral**
+(Mistral AI, 15 octobre 2026). Ils ont été ajoutés par un addendum au protocole, écrit avant leur première
+prévision (`configs/protocol.yaml`, `addendum_2026_10_16`), avec les mêmes origines, les mêmes entrées et les
+mêmes réglages publiés par défaut que Chronos-2. Chaque TSFM est testé sans covariables, avec la météo, avec la
+météo et le calendrier (fériés, ponts, vacances scolaires, week-end), et avec son contexte maximal (Chronos-2
+8 192 pas, TimesFM 15 360, Timestral 32 768). Timestral-5M, la plus petite version, tourne sur CPU.
+
+Commandes : `uv run flexgrid forecast national|segments <modèle>`, puis `score` et `tables`. Nombres :
+`results/tsfm_grid_{national,portfolio}.csv`, `results/calendar_ablation_{national,portfolio}.csv`,
+`results/verdicts_{national,portfolio}.csv`, `results/production_switch.csv`.
+
+### 1. Un nouveau TSFM bat-il Chronos-2 ?
+
+![Grille des TSFM](figures/tsfm_grid.png)
+
+**À contexte égal (2 048 pas), non.** Avec météo et calendrier, Timestral fait 1,18 fois le MAE de Chronos-2
+au national (IC 95 % [1,09 ; 1,29]) et 1,07 sur le portefeuille ([1,01 ; 1,13]) ; TimesFM 3.0 fait 1,19
+([1,11 ; 1,29]) et 1,29 ([1,20 ; 1,38]). Sans covariables, les trois se valent (1,55 à 1,59 au national) :
+l'écart vient de la façon dont chaque modèle lit les covariables, pas de la prévision univariée.
+
+**Avec tout son contexte, Timestral passe devant.** À 32 768 pas (presque deux ans), Timestral fait 990 MW au
+national, 0,89 fois Chronos-2 ([0,82 ; 0,99]), et 0,91 sur le portefeuille ([0,83 ; 1,00], pas de différence
+nette). Plus de contexte n'aide ni Chronos-2 (1,03) ni TimesFM 3.0 (1,04) : c'est propre à Timestral.
+
+| National, année de test | MAE (MW) | MAPE | couverture 90 % | contre RTE J-1 publiée | contre RTE débiaisée |
+|---|---|---|---|---|---|
+| Chronos-2 + covariables (rappel) | 1 109 | 2,15 % | 0,83 | 0,79, gagne | perd |
+| Timestral + covariables | 1 312 | 2,51 % | 0,96 | 0,94 [0,82 ; 1,08], pas de différence | 1,61, perd |
+| TimesFM 3.0 + covariables | 1 323 | 2,53 % | 0,89 | 0,95 [0,82 ; 1,09], pas de différence | 1,62, perd |
+| Timestral, contexte long | 990 | 1,92 % | 0,95 | **0,71 [0,61 ; 0,82], gagne** | 1,21 [1,09 ; 1,38], perd |
+| TimesFM 3.0, contexte long | 1 158 | 2,24 % | 0,89 | 0,83 [0,73 ; 0,94], gagne | 1,42, perd |
+| Timestral-5M + covariables (CPU) | 1 809 | 3,51 % | 0,87 | 1,29 [1,16 ; 1,44], perd | 2,22, perd |
+
+Les intervalles bruts de Timestral sont **trop larges** (couverture 0,95-0,96 au lieu de 0,90), à l'inverse de
+LightGBM. TimesFM 3.0 n'émet que les quantiles 0,1 à 0,9 : ses q0,05 et q0,95 sont extrapolés sous une hypothèse
+gaussienne (notes d'implémentation), et sa couverture brute en dépend. Timestral-5M ne bat même pas RTE publiée ;
+sur le portefeuille, il est au niveau de RTE au prorata (1,02 [0,93 ; 1,11]).
+
+### 2. Le calendrier en covariable aide-t-il les jours fériés ?
+
+![Calendrier](figures/tsfm_calendar.png)
+
+Ratio du MAE avec météo et calendrier sur le MAE avec la météo seule. Sous 1, le calendrier aide.
+
+| | tous les jours, national | fériés, national (n = 11) | tous les jours, portefeuille | fériés, portefeuille |
+|---|---|---|---|---|
+| Chronos-2 | 0,87 [0,82 ; 0,92] | 0,73 [0,53 ; 0,97] | 0,87 [0,83 ; 0,93] | 0,59 [0,43 ; 0,76] |
+| Timestral | 0,97 [0,95 ; 1,00] | 0,77 [0,58 ; 0,92] | 0,95 [0,93 ; 0,97] | 0,87 [0,76 ; 0,95] |
+| TimesFM 3.0 | 0,99 [0,97 ; 1,00] | 0,93 [0,86 ; 0,97] | 0,99 [0,98 ; 1,00] | 0,99 [0,97 ; 1,01] |
+
+- **Le calendrier aide chaque TSFM les jours fériés, mais pas assez.** Il retire un quart de l'erreur de
+  Chronos-2 et de Timestral ces jours-là au national, presque rien à TimesFM 3.0. Même avec lui, les TSFM restent
+  loin de LightGBM les jours fériés (figure *par type de jour* plus haut) : une covariable binaire « férié » ne
+  remplace pas dix ans de fériés vus à l'apprentissage.
+- **La météo compte plus que le calendrier** : elle retire 22 à 27 % du MAE des trois TSFM au national (ratios
+  météo / sans covariables de 0,73 à 0,78), le calendrier 1,5 à 13 %.
+- Sur les 4 ponts, le calendrier dégrade Timestral (1,20 [1,06 ; 1,33] au national). Quatre jours ne permettent
+  pas d'en tirer une règle ; l'addendum l'avait écrit d'avance.
+
+### 3. Les nouveaux TSFM améliorent-ils le mélange ?
+
+![Mélanges](figures/tsfm_ensembles.png)
+
+Non. Aucun mélange pré-enregistré de l'addendum ne fait mieux que LightGBM + Chronos-2, ni au national (le
+meilleur, LightGBM ½ + trois TSFM ⅙, fait 916 MW contre 897) ni sur le portefeuille (1,01 [0,99 ; 1,04]). Le
+service garde donc le mélange d'origine (règle de bascule pré-enregistrée, [05_production](../05_production/README.md)).
+
+**Un résultat exploratoire, déclaré comme tel** : le mélange LightGBM + Timestral à contexte long, construit
+*après* avoir vu que Timestral long fait presque aussi bien que LightGBM, est le meilleur modèle du dépôt. Au
+national, 832 MW, et **pas de différence avec RTE débiaisée** (1,02 [0,92 ; 1,13], 1,06 [0,96 ; 1,17] sous
+l'autre lecture du quart d'heure), là où le mélange d'origine perdait sous cette lecture. Sur le portefeuille,
+MAPE de 2,5 % et 0,93 fois le MAE du mélange d'origine ([0,89 ; 0,98]). Comme il a été choisi en regardant
+l'année de test, ce chiffre est optimiste ; il ne compte dans aucun verdict, et il ne sera crédible qu'évalué sur
+une fenêtre qu'il n'a pas vue.
+
+### Ce qu'on retient
+
+1. **Le TSFM ne change pas la conclusion, la manière de l'utiliser si.** À réglages égaux, Chronos-2 reste le
+   meilleur des trois. Ce qui fait gagner Timestral, c'est un contexte de deux ans que les autres n'exploitent pas.
+2. **Les covariables pèsent plus que le modèle** (déjà vrai pour Chronos-2) : sans covariables, les trois TSFM
+   sont à égalité.
+3. **Les jours fériés restent le point faible de tous les TSFM**, même informés par le calendrier.

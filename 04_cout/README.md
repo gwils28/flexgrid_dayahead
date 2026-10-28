@@ -43,6 +43,23 @@ l'énergie en écart, soit **de l'ordre de 0,1 à 0,6 M€ par an selon la péna
 définition du brief. L'intervalle de confiance est large (± 25 %) parce qu'une année ne contient qu'un hiver, et
 que l'hiver fait la moitié du coût.
 
+### Addendum du 2026-10-16 : Timestral et TimesFM 3.0
+
+La figure ci-dessus inclut les modèles de l'addendum (`results/cost_portfolio.csv`).
+
+| Nomination | Écart (MWh/an) | Coût k = 1 | k = 0,25 |
+|---|---|---|---|
+| Mélange LightGBM + Timestral contexte long (a posteriori) | 20 936 | 1,29 M€ | 322 k€ |
+| Mélange LightGBM + Chronos-2 (en service) | 22 514 | 1,38 M€ | 346 k€ |
+| Mélange LightGBM ½ + trois TSFM ⅙ | 22 819 | 1,41 M€ | 352 k€ |
+| Timestral + covariables, contexte long | 25 231 | 1,55 M€ | 388 k€ |
+| Timestral + covariables | 29 531 | 1,77 M€ | 443 k€ |
+| TimesFM 3.0 + covariables | 35 780 | 2,18 M€ | 545 k€ |
+
+Le meilleur mélange pré-enregistré de l'addendum coûte 23 k€ de plus par an que le mélange en service (k = 1).
+Le mélange a posteriori en coûterait 97 k€ de moins (24 k€ à k = 0,25), un chiffre optimiste puisqu'il a été
+choisi en regardant l'année de test ([02_backtest](../02_backtest/README.md#addendum-du-2026-10-16--timestral-et-timesfm-30)).
+
 ## Où l'argent se perd
 
 ![Coût mensuel](figures/cost_monthly.png)
