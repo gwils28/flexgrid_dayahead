@@ -313,6 +313,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#ce-que-montre-chaque-figure" id="toc-ce-que-montre-chaque-figure" class="nav-link" data-scroll-target="#ce-que-montre-chaque-figure">Ce que montre chaque figure</a></li>
   <li><a href="#les-autres-modèles" id="toc-les-autres-modèles" class="nav-link" data-scroll-target="#les-autres-modèles">Les autres modèles</a></li>
   <li><a href="#le-portefeuille-flexgrid" id="toc-le-portefeuille-flexgrid" class="nav-link" data-scroll-target="#le-portefeuille-flexgrid">Le portefeuille FlexGrid</a></li>
+  <li><a href="#addendum-du-2026-10-16-timestral-et-timesfm" id="toc-addendum-du-2026-10-16-timestral-et-timesfm" class="nav-link" data-scroll-target="#addendum-du-2026-10-16-timestral-et-timesfm">Addendum du 2026-10-16, Timestral et TimesFM</a></li>
   </ul>
 </nav>
     </div>
@@ -339,7 +340,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Rolling-origin sur <strong>365 jours de livraison</strong> (1er juillet 2025 → 30 juin 2026), prévision émise chaque veille à 9 h, précédés de 181 jours de validation (janvier-juin 2025) qui servent au router et à la calibration conforme. Commandes : <code>flexgrid forecast &lt;famille&gt; &lt;modèles&gt;</code>, puis <code>flexgrid score national segments</code>. Les nombres viennent de <code>results/summary_national.csv</code> et <code>results/verdicts_national.csv</code>.</p>
+<p>Rolling-origin sur <strong>365 jours de livraison</strong> (1er juillet 2025 → 30 juin 2026), prévision émise chaque veille à 9 h, précédés de 181 jours de validation (janvier-juin 2025) qui servent au router et à la calibration conforme. Commandes : <code>flexgrid forecast &lt;famille&gt; &lt;modèles&gt;</code>, puis <code>flexgrid score national segments</code>. Les nombres viennent de <code>results/summary_national.csv</code> et <code>results/verdicts_national.csv</code>. Timestral et TimesFM 3.0, ajoutés le 2026-10-16, ont leur <a href="#addendum-du-2026-10-16-timestral-et-timesfm">propre section</a> à la fin.</p>
 <section id="la-réponse-en-une-phrase-national" class="level2">
 <h2 class="anchored" data-anchor-id="la-réponse-en-une-phrase-national">La réponse en une phrase (national)</h2>
 <blockquote class="blockquote">
@@ -542,7 +543,7 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Portefeuille par type de jour</figcaption>
 </figure>
 </div>
-<p>Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où l’un de ces trois modèles perd. Sur les ponts, tous perdent contre RTE au prorata : un pont dans le tertiaire, c’est la moitié des bureaux fermés, ce qu’aucune variable du calendrier ne mesure bien. Sur les fériés, LightGBM (0,42) fait bien mieux que Chronos-2 (1,25), comme sur le national. Noël le montre :</p>
+<p>Les jours fériés (n = 11) et les ponts (n = 4) sont les seuls où l’un de ces modèles perd. Sur les ponts, tous perdent contre RTE au prorata : un pont dans le tertiaire, c’est la moitié des bureaux fermés, ce qu’aucune variable du calendrier ne mesure bien. Sur les fériés, LightGBM (0,42) fait bien mieux que Chronos-2 (1,25), comme sur le national. Noël le montre :</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/portfolio_fans.png" class="img-fluid figure-img"></p>
@@ -663,6 +664,168 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+</section>
+</section>
+<section id="addendum-du-2026-10-16-timestral-et-timesfm" class="level2">
+<h2 class="anchored" data-anchor-id="addendum-du-2026-10-16-timestral-et-timesfm">Addendum du 2026-10-16, Timestral et TimesFM</h2>
+<p>Deux TSFM sont sortis après la fin du projet : <strong>TimesFM 3.0</strong> (Google Research, 31 août 2026) et <strong>Timestral</strong> (Mistral AI, 15 octobre 2026). Ils ont été ajoutés par un addendum au protocole, écrit avant leur première prévision (<code>configs/protocol.yaml</code>, <code>addendum_2026_10_16</code>), avec les mêmes origines, les mêmes entrées et les mêmes réglages publiés par défaut que Chronos-2. Chaque TSFM est testé sans covariables, avec la météo, avec la météo et le calendrier (fériés, ponts, vacances scolaires, week-end), et avec son contexte maximal (Chronos-2 8 192 pas, TimesFM 15 360, Timestral 32 768). Timestral-5M, la plus petite version, tourne sur CPU.</p>
+<p>Commandes : <code>uv run flexgrid forecast national|segments &lt;modèle&gt;</code>, puis <code>score</code> et <code>tables</code>. Nombres : <code>results/tsfm_grid_{national,portfolio}.csv</code>, <code>results/calendar_ablation_{national,portfolio}.csv</code>, <code>results/verdicts_{national,portfolio}.csv</code>, <code>results/production_switch.csv</code>.</p>
+<section id="un-nouveau-tsfm-bat-il-chronos-2" class="level3">
+<h3 class="anchored" data-anchor-id="un-nouveau-tsfm-bat-il-chronos-2">1. Un nouveau TSFM bat-il Chronos-2 ?</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/tsfm_grid.png" class="img-fluid figure-img"></p>
+<figcaption>Grille des TSFM</figcaption>
+</figure>
+</div>
+<p><strong>À contexte égal (2 048 pas), non.</strong> Avec météo et calendrier, Timestral fait 1,18 fois le MAE de Chronos-2 au national (IC 95 % [1,09 ; 1,29]) et 1,07 sur le portefeuille ([1,01 ; 1,13]) ; TimesFM 3.0 fait 1,19 ([1,11 ; 1,29]) et 1,29 ([1,20 ; 1,38]). Sans covariables, les trois se valent (1,55 à 1,59 au national) : l’écart vient de la façon dont chaque modèle lit les covariables, pas de la prévision univariée.</p>
+<p><strong>Avec tout son contexte, Timestral passe devant.</strong> À 32 768 pas (presque deux ans), Timestral fait 990 MW au national, 0,89 fois Chronos-2 ([0,82 ; 0,99]), et 0,91 sur le portefeuille ([0,83 ; 1,00], pas de différence nette). Plus de contexte n’aide ni Chronos-2 (1,03) ni TimesFM 3.0 (1,04) : c’est propre à Timestral.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>National, année de test</th>
+<th>MAE (MW)</th>
+<th>MAPE</th>
+<th>couverture 90 %</th>
+<th>contre RTE J-1 publiée</th>
+<th>contre RTE débiaisée</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chronos-2 + covariables (rappel)</td>
+<td>1 109</td>
+<td>2,15 %</td>
+<td>0,83</td>
+<td>0,79, gagne</td>
+<td>perd</td>
+</tr>
+<tr class="even">
+<td>Timestral + covariables</td>
+<td>1 312</td>
+<td>2,51 %</td>
+<td>0,96</td>
+<td>0,94 [0,82 ; 1,08], pas de différence</td>
+<td>1,61, perd</td>
+</tr>
+<tr class="odd">
+<td>TimesFM 3.0 + covariables</td>
+<td>1 323</td>
+<td>2,53 %</td>
+<td>0,89</td>
+<td>0,95 [0,82 ; 1,09], pas de différence</td>
+<td>1,62, perd</td>
+</tr>
+<tr class="even">
+<td>Timestral, contexte long</td>
+<td>990</td>
+<td>1,92 %</td>
+<td>0,95</td>
+<td><strong>0,71 [0,61 ; 0,82], gagne</strong></td>
+<td>1,21 [1,09 ; 1,38], perd</td>
+</tr>
+<tr class="odd">
+<td>TimesFM 3.0, contexte long</td>
+<td>1 158</td>
+<td>2,24 %</td>
+<td>0,89</td>
+<td>0,83 [0,73 ; 0,94], gagne</td>
+<td>1,42, perd</td>
+</tr>
+<tr class="even">
+<td>Timestral-5M + covariables (CPU)</td>
+<td>1 809</td>
+<td>3,51 %</td>
+<td>0,87</td>
+<td>1,29 [1,16 ; 1,44], perd</td>
+<td>2,22, perd</td>
+</tr>
+</tbody>
+</table>
+<p>Les intervalles bruts de Timestral sont <strong>trop larges</strong> (couverture 0,95-0,96 au lieu de 0,90), à l’inverse de LightGBM. TimesFM 3.0 n’émet que les quantiles 0,1 à 0,9 : ses q0,05 et q0,95 sont extrapolés sous une hypothèse gaussienne (notes d’implémentation), et sa couverture brute en dépend. Timestral-5M ne bat même pas RTE publiée ; sur le portefeuille, il est au niveau de RTE au prorata (1,02 [0,93 ; 1,11]).</p>
+</section>
+<section id="le-calendrier-en-covariable-aide-t-il-les-jours-fériés" class="level3">
+<h3 class="anchored" data-anchor-id="le-calendrier-en-covariable-aide-t-il-les-jours-fériés">2. Le calendrier en covariable aide-t-il les jours fériés ?</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/tsfm_calendar.png" class="img-fluid figure-img"></p>
+<figcaption>Calendrier</figcaption>
+</figure>
+</div>
+<p>Ratio du MAE avec météo et calendrier sur le MAE avec la météo seule. Sous 1, le calendrier aide.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>tous les jours, national</th>
+<th>fériés, national (n = 11)</th>
+<th>tous les jours, portefeuille</th>
+<th>fériés, portefeuille</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chronos-2</td>
+<td>0,87 [0,82 ; 0,92]</td>
+<td>0,73 [0,53 ; 0,97]</td>
+<td>0,87 [0,83 ; 0,93]</td>
+<td>0,59 [0,43 ; 0,76]</td>
+</tr>
+<tr class="even">
+<td>Timestral</td>
+<td>0,97 [0,95 ; 1,00]</td>
+<td>0,77 [0,58 ; 0,92]</td>
+<td>0,95 [0,93 ; 0,97]</td>
+<td>0,87 [0,76 ; 0,95]</td>
+</tr>
+<tr class="odd">
+<td>TimesFM 3.0</td>
+<td>0,99 [0,97 ; 1,00]</td>
+<td>0,93 [0,86 ; 0,97]</td>
+<td>0,99 [0,98 ; 1,00]</td>
+<td>0,99 [0,97 ; 1,01]</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Le calendrier aide chaque TSFM les jours fériés, mais pas assez.</strong> Il retire un quart de l’erreur de Chronos-2 et de Timestral ces jours-là au national, presque rien à TimesFM 3.0. Même avec lui, les TSFM restent loin de LightGBM les jours fériés (figure <em>par type de jour</em> plus haut) : une covariable binaire « férié » ne remplace pas dix ans de fériés vus à l’apprentissage.</li>
+<li><strong>La météo compte plus que le calendrier</strong> : elle retire 22 à 27 % du MAE des trois TSFM au national (ratios météo / sans covariables de 0,73 à 0,78), le calendrier 1,5 à 13 %.</li>
+<li>Sur les 4 ponts, le calendrier dégrade Timestral (1,20 [1,06 ; 1,33] au national). Quatre jours ne permettent pas d’en tirer une règle ; l’addendum l’avait écrit d’avance.</li>
+</ul>
+</section>
+<section id="les-nouveaux-tsfm-améliorent-ils-le-mélange" class="level3">
+<h3 class="anchored" data-anchor-id="les-nouveaux-tsfm-améliorent-ils-le-mélange">3. Les nouveaux TSFM améliorent-ils le mélange ?</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/tsfm_ensembles.png" class="img-fluid figure-img"></p>
+<figcaption>Mélanges</figcaption>
+</figure>
+</div>
+<p>Non. Aucun mélange pré-enregistré de l’addendum ne fait mieux que LightGBM + Chronos-2, ni au national (le meilleur, LightGBM ½ + trois TSFM ⅙, fait 916 MW contre 897) ni sur le portefeuille (1,01 [0,99 ; 1,04]). Le service garde donc le mélange d’origine (règle de bascule pré-enregistrée, <a href="./05_production.html">05_production</a>).</p>
+<p><strong>Un résultat exploratoire, déclaré comme tel</strong> : le mélange LightGBM + Timestral à contexte long, construit <em>après</em> avoir vu que Timestral long fait presque aussi bien que LightGBM, est le meilleur modèle du dépôt. Au national, 832 MW, et <strong>pas de différence avec RTE débiaisée</strong> (1,02 [0,92 ; 1,13], 1,06 [0,96 ; 1,17] sous l’autre lecture du quart d’heure), là où le mélange d’origine perdait sous cette lecture. Sur le portefeuille, MAPE de 2,5 % et 0,93 fois le MAE du mélange d’origine ([0,89 ; 0,98]). Comme il a été choisi en regardant l’année de test, ce chiffre est optimiste ; il ne compte dans aucun verdict, et il ne sera crédible qu’évalué sur une fenêtre qu’il n’a pas vue.</p>
+</section>
+<section id="ce-quon-retient" class="level3">
+<h3 class="anchored" data-anchor-id="ce-quon-retient">Ce qu’on retient</h3>
+<ol type="1">
+<li><strong>Le TSFM ne change pas la conclusion, la manière de l’utiliser si.</strong> À réglages égaux, Chronos-2 reste le meilleur des trois. Ce qui fait gagner Timestral, c’est un contexte de deux ans que les autres n’exploitent pas.</li>
+<li><strong>Les covariables pèsent plus que le modèle</strong> (déjà vrai pour Chronos-2) : sans covariables, les trois TSFM sont à égalité.</li>
+<li><strong>Les jours fériés restent le point faible de tous les TSFM</strong>, même informés par le calendrier.</li>
+</ol>
 
 
 </section>

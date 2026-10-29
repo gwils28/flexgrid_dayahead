@@ -488,6 +488,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="le-token-entso-e">Le token ENTSO-E</h3>
 <p>Le client ENTSO-E (<code>src/flexgrid/sources/entsoe.py</code>) lit le token dans <code>ENTSOE_TOKEN</code> ou dans le fichier désigné par <code>ENTSOE_TOKEN_FILE</code>, monté par Docker comme secret (<code>.secrets/entsoe_token</code>, ignoré par git). Il n’apparaît ni dans le code, ni dans la configuration, ni dans l’image. Faute de token, le service tourne sur éCO2mix et Energy-Charts. Le client est testé sur une réponse XML enregistrée.</p>
 </section>
+<section id="addendum-du-2026-10-16-le-service-garde-le-mélange-lightgbm-chronos-2" class="level3">
+<h3 class="anchored" data-anchor-id="addendum-du-2026-10-16-le-service-garde-le-mélange-lightgbm-chronos-2">Addendum du 2026-10-16 : le service garde le mélange LightGBM + Chronos-2</h3>
+<p>La règle était fixée avant les calculs (<code>configs/protocol.yaml</code>, <code>addendum_2026_10_16</code>, question 3) : un mélange de l’addendum ne remplace <code>ensemble</code> que s’il a un MAE plus bas sur le portefeuille pendant la validation (janvier-juin 2025), et l’année de test confirme ou infirme. Nombres : <code>results/production_switch.csv</code> (<code>uv run flexgrid tables</code>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mélange</th>
+<th>MAE validation (MW)</th>
+<th>Éligible</th>
+<th>MAE test / <code>ensemble</code> (IC 95 %)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ensemble</code> (LightGBM + Chronos-2, en service)</td>
+<td>2,92</td>
+<td></td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>LightGBM ½ + Chronos-2, Timestral, TimesFM ⅙ chacun</td>
+<td>2,84</td>
+<td>oui</td>
+<td>1,014 [0,988 ; 1,042]</td>
+</tr>
+<tr class="odd">
+<td>LightGBM + Timestral</td>
+<td>2,90</td>
+<td>oui</td>
+<td>1,032 [0,999 ; 1,074]</td>
+</tr>
+<tr class="even">
+<td>LightGBM + TimesFM 3.0</td>
+<td>3,11</td>
+<td>non</td>
+<td>1,147 [1,095 ; 1,200]</td>
+</tr>
+<tr class="odd">
+<td>Les quatre à parts égales</td>
+<td>3,00</td>
+<td>non</td>
+<td>1,103 [1,057 ; 1,156]</td>
+</tr>
+<tr class="even">
+<td>LightGBM + Timestral contexte long (a posteriori)</td>
+<td>2,68</td>
+<td>non (a posteriori)</td>
+<td>0,930 [0,885 ; 0,984]</td>
+</tr>
+</tbody>
+</table>
+<p>Deux mélanges passent la validation ; l’année de test ne confirme ni l’un ni l’autre (« pas de différence »), et chacun demanderait deux modèles de plus sur le GPU. <strong>Le service ne change pas</strong> : <code>nomination_model: ensemble</code>. Le mélange avec Timestral à contexte long est le seul à faire mieux sur le test, mais il a été construit après avoir vu le national : il sera candidat d’un prochain protocole, évalué sur une fenêtre qu’il n’a pas vue.</p>
+<p>Timestral-5M tourne sur CPU ; il aurait pu servir de repli sans GPU. Il ne fait pas l’affaire : MAE de 5,36 MW sur le portefeuille (<code>results/summary_portfolio.csv</code>), au niveau de RTE au prorata (5,28), contre 2,64 pour LightGBM, qui reste le repli.</p>
+<p>Licence : les poids de TimesFM 3.0 excluent l’usage commercial. Ce dépôt est une veille personnelle ; si un mélange avec TimesFM avait été retenu, il n’aurait pas pu servir chez un vrai BRP sans autre licence.</p>
+</section>
 <section id="ce-qui-manque-pour-une-vraie-production" class="level3">
 <h3 class="anchored" data-anchor-id="ce-qui-manque-pour-une-vraie-production">Ce qui manque pour une vraie production</h3>
 <ul>

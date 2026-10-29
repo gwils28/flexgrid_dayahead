@@ -466,6 +466,65 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 <p>Lecture pour un BRP de 800 GWh : passer de la méthode sans modèle (≈ 6 % de MAPE) au mélange divise par deux l’énergie en écart, soit <strong>de l’ordre de 0,1 à 0,6 M€ par an selon la pénalité réelle</strong>, et 1,2 M€ sous la définition du brief. L’intervalle de confiance est large (± 25 %) parce qu’une année ne contient qu’un hiver, et que l’hiver fait la moitié du coût.</p>
+<section id="addendum-du-2026-10-16-timestral-et-timesfm-3.0" class="level3">
+<h3 class="anchored" data-anchor-id="addendum-du-2026-10-16-timestral-et-timesfm-3.0">Addendum du 2026-10-16 : Timestral et TimesFM 3.0</h3>
+<p>La figure ci-dessus inclut les modèles de l’addendum (<code>results/cost_portfolio.csv</code>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Nomination</th>
+<th>Écart (MWh/an)</th>
+<th>Coût k = 1</th>
+<th>k = 0,25</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mélange LightGBM + Timestral contexte long (a posteriori)</td>
+<td>20 936</td>
+<td>1,29 M€</td>
+<td>322 k€</td>
+</tr>
+<tr class="even">
+<td>Mélange LightGBM + Chronos-2 (en service)</td>
+<td>22 514</td>
+<td>1,38 M€</td>
+<td>346 k€</td>
+</tr>
+<tr class="odd">
+<td>Mélange LightGBM ½ + trois TSFM ⅙</td>
+<td>22 819</td>
+<td>1,41 M€</td>
+<td>352 k€</td>
+</tr>
+<tr class="even">
+<td>Timestral + covariables, contexte long</td>
+<td>25 231</td>
+<td>1,55 M€</td>
+<td>388 k€</td>
+</tr>
+<tr class="odd">
+<td>Timestral + covariables</td>
+<td>29 531</td>
+<td>1,77 M€</td>
+<td>443 k€</td>
+</tr>
+<tr class="even">
+<td>TimesFM 3.0 + covariables</td>
+<td>35 780</td>
+<td>2,18 M€</td>
+<td>545 k€</td>
+</tr>
+</tbody>
+</table>
+<p>Le meilleur mélange pré-enregistré de l’addendum coûte 23 k€ de plus par an que le mélange en service (k = 1). Le mélange a posteriori en coûterait 97 k€ de moins (24 k€ à k = 0,25), un chiffre optimiste puisqu’il a été choisi en regardant l’année de test (<a href="./02_backtest.html#addendum-du-2026-10-16-timestral-et-timesfm">02_backtest</a>).</p>
+</section>
 </section>
 <section id="où-largent-se-perd" class="level2">
 <h2 class="anchored" data-anchor-id="où-largent-se-perd">Où l’argent se perd</h2>

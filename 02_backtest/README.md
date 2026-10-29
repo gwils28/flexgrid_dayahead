@@ -4,7 +4,7 @@ Rolling-origin sur **365 jours de livraison** (1er juillet 2025 → 30 juin 2026
 9 h, précédés de 181 jours de validation (janvier-juin 2025) qui servent au router et à la calibration conforme.
 Commandes : `flexgrid forecast <famille> <modèles>`, puis `flexgrid score national segments`. Les nombres viennent
 de `results/summary_national.csv` et `results/verdicts_national.csv`. Timestral et TimesFM 3.0, ajoutés le
-2026-10-16, ont leur [propre section](#addendum-du-2026-10-16--timestral-et-timesfm-30) à la fin.
+2026-10-16, ont leur [propre section](#addendum-du-2026-10-16-timestral-et-timesfm) à la fin.
 
 ## La réponse en une phrase (national)
 
@@ -186,7 +186,7 @@ plutôt que les mélanger ?
 | Naïve J-1 | 12,42 | 12,90 % | 1,794 | 0,874 |
 
 
-## Addendum du 2026-10-16 : Timestral et TimesFM 3.0
+## Addendum du 2026-10-16, Timestral et TimesFM
 
 Deux TSFM sont sortis après la fin du projet : **TimesFM 3.0** (Google Research, 31 août 2026) et **Timestral**
 (Mistral AI, 15 octobre 2026). Ils ont été ajoutés par un addendum au protocole, écrit avant leur première

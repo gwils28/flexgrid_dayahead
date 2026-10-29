@@ -416,10 +416,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Cold-start ?</td>
-<td>7 jours d’historique : la naïve gagne. Dès 14 jours : LightGBM appris sur d’autres régions. Le few-shot in-context de Chronos-2 n’aide pas</td>
+<td>7 jours d’historique : la naïve gagne. Dès 14 jours : LightGBM appris sur d’autres régions. Le few-shot in-context de Chronos-2 n’aide pas ; celui de Timestral (addendum) est le seul modèle sous la naïve à 7 jours (5,7 % contre 6,6 % de WAPE, IC qui touche 1)</td>
 <td><a href="./03_router.html#2-le-cold-start">03_router</a></td>
 </tr>
 <tr class="odd">
+<td>Timestral, TimesFM 3.0 (addendum) ?</td>
+<td>À contexte égal, ni l’un ni l’autre ne bat Chronos-2 (MAE 1,18 et 1,19 fois au national). <strong>Timestral avec deux ans de contexte, si</strong> : 990 MW, 0,89 fois Chronos-2, 0,71 fois RTE publiée ; il perd encore contre RTE débiaisée. Le calendrier en covariable aide les jours fériés sans combler l’écart avec LightGBM. Aucun mélange pré-enregistré ne bat le mélange d’origine : le service ne change pas</td>
+<td><a href="./02_backtest.html#addendum-du-2026-10-16-timestral-et-timesfm">02_backtest</a></td>
+</tr>
+<tr class="even">
 <td>Mise en production ?</td>
 <td>Dagster, MLflow, FastAPI, Docker, en local. La production reproduit le backtest à l’identique quand elle réapprend à la même date. Monitoring rejoué sur l’année de test</td>
 <td><a href="./05_production.html">05_production</a></td>
@@ -476,8 +481,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Chronos-2 ou TTM-r3 / PatchTST-FM</td>
-<td>Chronos-2 seul</td>
-<td>Un second TSFM n’est ajouté que s’il change une conclusion (SPEC)</td>
+<td>Chronos-2, puis Timestral et TimesFM 3.0 par un addendum du 16 octobre 2026</td>
+<td>Un second TSFM n’était ajouté que s’il changeait une conclusion (SPEC) ; deux TSFM sortis après le projet ont été ajoutés à la demande de l’auteur, sous un addendum écrit avant leur première prévision</td>
 </tr>
 <tr class="odd">
 <td>RevIN</td>
@@ -504,11 +509,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid build          <span class="co"># tables intermédiaires</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid forecast national snaive_day snaive_week mstl ets_seasonal lgbm chronos2 chronos2_cov</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid forecast segments snaive_day snaive_week mstl ets_seasonal lgbm chronos2 chronos2_cov</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid score national segments <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run flexgrid tables</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid router <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run flexgrid coldstart</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> figures report            <span class="co"># figures de tous les blocs, puis le rapport Quarto dans docs/</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run ruff check src tests</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Le backtest complet prend plusieurs heures sur une RTX 5070 et 32 cœurs, dont 4 h 30 pour LightGBM sur le panel (78 réapprentissages hebdomadaires de 7 quantiles sur jusqu’à 4,2 M de lignes). Les prévisions brutes ne sont pas versionnées ; les tableaux par origine (<code>results/per_origin_*.parquet</code>) le sont, et tous les tableaux, figures et verdicts en partent.</p>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># addendum : timestral*, timesfm3*, chronos2_wx, *_cov_long (liste dans configs/protocol.yaml)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid forecast national timestral timestral_wx timestral_cov timesfm3 timesfm3_wx timesfm3_cov ...</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid score national segments <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run flexgrid tables</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run flexgrid router <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run flexgrid coldstart <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run flexgrid coldstart <span class="at">--addendum</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> figures report            <span class="co"># figures de tous les blocs, puis le rapport Quarto dans docs/</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest <span class="kw">&amp;&amp;</span> <span class="ex">uv</span> run ruff check src tests</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Le backtest complet prend plusieurs heures sur une RTX 5070 et 32 cœurs, dont 4 h 30 pour LightGBM sur le panel (78 réapprentissages hebdomadaires de 7 quantiles sur jusqu’à 4,2 M de lignes). L’addendum ajoute environ 9 h de GPU sur le panel (Timestral et TimesFM 3.0 avec covariables : 1 h 48 et 1 h 57) et 1 h 40 de CPU pour Timestral-5M. Les prévisions brutes ne sont pas versionnées ; les tableaux par origine (<code>results/per_origin_*.parquet</code>) le sont, et tous les tableaux, figures et verdicts en partent.</p>
 </section>
 <section id="organisation" class="level2">
 <h2 class="anchored" data-anchor-id="organisation">Organisation</h2>
@@ -524,7 +531,8 @@ report/          rapport Quarto (publié dans docs/)</code></pre>
 </section>
 <section id="transparence-sur-lusage-de-lia" class="level2">
 <h2 class="anchored" data-anchor-id="transparence-sur-lusage-de-lia">Transparence sur l’usage de l’IA</h2>
-<p>Ce projet a été réalisé avec Claude Code (Anthropic), selon la méthode de l’article cité plus haut : entretien d’abord, SPEC écrite avant le code, protocole pré-enregistré, notes d’implémentation pour chaque écart, et un nombre écrit seulement s’il vient d’un fichier de <code>results/</code>. Le code, les analyses, les figures et le texte ont été produits par l’agent sous la direction de l’auteur, qui a fixé le périmètre, arbitré les choix de l’entretien et relu les conclusions. L’historique git a été daté pour refléter un calendrier de travail du 18 août au 10 octobre 2026, à la demande de l’auteur. Les dates de téléchargement des données, elles, sont les vraies : elles sont dans <code>data/MANIFEST.json</code>.</p>
+<p>Ce projet a été réalisé avec Claude Code (Anthropic), selon la méthode de l’article cité plus haut : entretien d’abord, SPEC écrite avant le code, protocole pré-enregistré, notes d’implémentation pour chaque écart, et un nombre écrit seulement s’il vient d’un fichier de <code>results/</code>. Le code, les analyses, les figures et le texte ont été produits par l’agent sous la direction de l’auteur, qui a fixé le périmètre, arbitré les choix de l’entretien et relu les conclusions. L’historique git a été daté pour refléter un calendrier de travail du 18 août au 10 octobre 2026, puis du 16 au 31 octobre pour l’addendum Timestral / TimesFM 3.0, à la demande de l’auteur. Les dates de téléchargement des données, elles, sont les vraies : elles sont dans <code>data/MANIFEST.json</code>.</p>
+<p>Licences des modèles : Chronos-2 Apache-2.0 ; Timestral, code Apache-2.0 et poids sous licence MIT modifiée ; TimesFM 3.0, poids <strong>non commerciaux</strong>. Ce dépôt est une veille personnelle sans usage commercial ; un vrai BRP ne pourrait pas servir TimesFM 3.0 sans autre licence.</p>
 
 
 </section>

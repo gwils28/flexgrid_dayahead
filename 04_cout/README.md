@@ -58,7 +58,7 @@ La figure ci-dessus inclut les modèles de l'addendum (`results/cost_portfolio.c
 
 Le meilleur mélange pré-enregistré de l'addendum coûte 23 k€ de plus par an que le mélange en service (k = 1).
 Le mélange a posteriori en coûterait 97 k€ de moins (24 k€ à k = 0,25), un chiffre optimiste puisqu'il a été
-choisi en regardant l'année de test ([02_backtest](../02_backtest/README.md#addendum-du-2026-10-16--timestral-et-timesfm-30)).
+choisi en regardant l'année de test ([02_backtest](../02_backtest/README.md#addendum-du-2026-10-16-timestral-et-timesfm)).
 
 ## Où l'argent se perd
 
