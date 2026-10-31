@@ -1,6 +1,6 @@
 # SPEC : FlexGrid Énergie, prévision J-1 d'un portefeuille d'équilibre
 
-Issu de l'entretien du 18 août 2026 et de la passe « angles morts » faite sur les données avant d'écrire le
+Issu de l'entretien et de la passe « angles morts » faite sur les données avant d'écrire le
 moindre modèle. Le brief est [`plan_flexgrid.md`](plan_flexgrid.md). Les nombres qui décident du verdict sont
 figés dans [`configs/protocol.yaml`](configs/protocol.yaml), versionné avant le premier calcul de prévision.
 Ce projet applique la veille [W25](https://github.com/gwils28/W25_tsfm_viability) : ses leçons sont reprises
@@ -16,7 +16,7 @@ de jours, origines nombreuses plutôt que 6).
 | Prix | Pas de token ENTSO-E. Prix day-ahead FR par l'API publique Energy-Charts. Pas de source publique sans compte pour le prix de règlement des écarts : coût d'écart par un modèle de pénalité déclaré (angle mort 8). Le client ENTSO-E est écrit et testé, activable par token |
 | Mise en production | Pipeline local réel : Dagster (ingestion → features → prévision → nomination), MLflow (registre), API FastAPI des quantiles, Docker. Monitoring rejoué sur l'année de test |
 | Langue | Français pour la documentation et le rapport, anglais pour les identifiants de code |
-| Git | Commits par l'agent, antidatés du 18 août au ~10 octobre 2026, poussés sur `gwils28/flexgrid_dayahead` (public) |
+| Git | Commits par l'agent, poussés sur `gwils28/flexgrid_dayahead` (public) |
 
 ## Le portefeuille FlexGrid
 

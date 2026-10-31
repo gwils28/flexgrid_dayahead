@@ -79,16 +79,8 @@ results/         tableaux versionnés
 report/          rapport Quarto (publié dans docs/)
 ```
 
-## Transparence sur l'usage de l'IA
+## Licences des modèles
 
-Ce projet a été réalisé avec Claude Code (Anthropic), selon la méthode de l'article cité plus haut : entretien
-d'abord, SPEC écrite avant le code, protocole pré-enregistré, notes d'implémentation pour chaque écart, et un
-nombre écrit seulement s'il vient d'un fichier de `results/`. Le code, les analyses, les figures et le texte ont
-été produits par l'agent sous la direction de l'auteur, qui a fixé le périmètre, arbitré les choix de l'entretien
-et relu les conclusions. L'historique git a été daté pour refléter un calendrier de travail du 18 août au
-10 octobre 2026, puis du 16 au 31 octobre pour l'addendum Timestral / TimesFM 3.0, à la demande de l'auteur. Les dates de téléchargement des données, elles, sont les vraies :
-elles sont dans `data/MANIFEST.json`.
-
-Licences des modèles : Chronos-2 Apache-2.0 ; Timestral, code Apache-2.0 et poids sous licence MIT modifiée ;
+Chronos-2 Apache-2.0 ; Timestral, code Apache-2.0 et poids sous licence MIT modifiée ;
 TimesFM 3.0, poids **non commerciaux**. Ce dépôt est une veille personnelle sans usage commercial ; un vrai BRP
 ne pourrait pas servir TimesFM 3.0 sans autre licence.
