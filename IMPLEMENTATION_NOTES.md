@@ -104,7 +104,7 @@ récentes en dernier.
   personnelle sans usage commercial ; l'auteur a choisi d'inclure TimesFM dans l'étude comme dans le service.
 - **Few-shot de Timestral au cold-start.** Les frères du segment entrent comme covariables passées (2 048 pas,
   historique complet) ; la cible tronquée est complétée à gauche par des valeurs manquantes. Les frères sont
-  masqués comme la cible au-delà de l'horloge de nomination. TimesFM 3.0 n'a pas de few-shot : il exige des
+  coupés au même instant que la cible, l'horloge de nomination. TimesFM 3.0 n'a pas de few-shot : il exige des
   covariables de la même longueur que la cible.
 - **Lecture de la règle de bascule (question 3, 2026-10-27).** La règle dit « seulement si » un mélange de
   l'addendum fait mieux que `ensemble` en validation, « l'année de test confirme ou infirme ». Deux mélanges

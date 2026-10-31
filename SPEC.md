@@ -108,6 +108,10 @@ Hors périmètre, nommé comme suite possible : TTM-r3 et PatchTST-FM (Chronos-2
 second TSFM n'est ajouté que si Chronos-2 change une conclusion), le fine-tuning, les bornes de recharge, le prix
 d'écart réel (token ENTSO-E ou compte RTE).
 
+Addendum du 2026-10-16 (après la fin du projet, à la demande de l'auteur) : Timestral (Mistral AI) et TimesFM 3.0
+(Google Research) entrent dans tous les blocs, avec trois jeux de covariables (aucune, météo, météo + calendrier)
+et leur contexte maximal. Questions et règles dans `configs/protocol.yaml` (`addendum_2026_10_16`).
+
 ## Critères de réussite
 
 - `flexgrid backtest` réimprime le même tableau sur deux exécutions.
@@ -129,3 +133,4 @@ d'écart réel (token ENTSO-E ou compte RTE).
 | Nomination J-1 de bout en bout en local, servie par l'API | Tenu sur trois jours (46, 48 et 50 pas) ([05_production](05_production/README.md)) |
 | Chaque figure produite par le code du dépôt à partir de résultats versionnés | Partiellement : verdicts, coûts, router, cold-start et dérive du concept partent de `results/`. Les figures du bloc A, la dérive des données, les profils par heure, les éventails et le coût par heure lisent les données ou les prévisions brutes (non versionnées) : elles se refont après `make data` et le backtest |
 | `pytest` vert, `ruff` propre, CI | Tenu |
+| Addendum : un nouveau TSFM bat-il Chronos-2, le calendrier aide-t-il, le service change-t-il ? | Tranché ([02_backtest](02_backtest/README.md#addendum-du-2026-10-16-timestral-et-timesfm)) : non à contexte égal, oui pour Timestral à contexte long (national) ; le calendrier aide surtout Chronos-2 ; le service garde le mélange d'origine |
