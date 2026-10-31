@@ -24,7 +24,7 @@ POLICY_LABELS = {
     "learned_stump4": "router appris, 4 branches",
     "oracle4": "router oracle, 4 branches",
     "ens_lgbm_timestral": "mélange LGBM + Timestral",
-    "ens_lgbm_tsfm3": "mélange LGBM ½ + 3 TSFM ½",
+    "ens_lgbm_tsfm3": "mélange LGBM ½ + 3 TSFM ⅙",
     "ens_all4": "mélange à parts égales des 4",
 }
 POLICY_COLORS = {

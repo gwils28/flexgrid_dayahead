@@ -76,7 +76,7 @@ MODEL_LABELS = {
     "ensemble": "Mélange LGBM + Chronos-2",
     "ens_lgbm_timestral": "Mélange LGBM + Timestral",
     "ens_lgbm_timesfm3": "Mélange LGBM + TimesFM",
-    "ens_lgbm_tsfm3": "Mélange LGBM ½ + 3 TSFM ½",
+    "ens_lgbm_tsfm3": "Mélange LGBM ½ + 3 TSFM ⅙",
     "ens_all4": "Mélange à parts égales des 4",
     "ens_lgbm_timestral_long": "Mélange LGBM + Timestral long (a posteriori)",
     "rte_j1": "RTE J-1",
